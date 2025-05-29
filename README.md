@@ -25,7 +25,7 @@ Este projeto foi desenvolvido como parte do curso **Web Developer Java**, com o 
 ### 🛠 Tecnologias utilizadas
 
 - Java 21  
-- Spring Boot 3.5 
+- Spring Boot 3.5.x 
 - Spring Data JPA  
 - SQL Server  
 - Maven  
@@ -105,9 +105,9 @@ No terminal (ou pela IDE):
 ```
 ---
 
-### ✅ Status atual
+### ☑️ Status atual
 
-- [x] Projeto inicial com Spring Boot configurado
+- ✅ Projeto inicial com Spring Boot configurado
 
 - [ ] Entidades Aluno e Turma com relacionamento
 

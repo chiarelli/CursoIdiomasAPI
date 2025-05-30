@@ -51,13 +51,21 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 			<version>3.4.5</version>
 		</dependency>
-		<!--  https://mvnrepository.com/artifact/org.projectlombok/lombok  -->
+
+		<!-- A lib spring-mediatr foi importada via .jar file e necessita de kotlin-stdlib para rodar -->
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.38</version>
-			<scope>provided</scope>
+			<groupId>io.jkratz.springmediatr</groupId>
+			<artifactId>spring-mediatr</artifactId>
+			<version>1.1-RELEASE</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/libs/spring-mediatr-1.1-RELEASE.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib</artifactId>
+			<version>2.0.21</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

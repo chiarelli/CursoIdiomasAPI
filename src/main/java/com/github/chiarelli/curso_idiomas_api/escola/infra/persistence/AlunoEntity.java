@@ -1,5 +1,7 @@
 package com.github.chiarelli.curso_idiomas_api.escola.infra.persistence;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -7,6 +9,7 @@ import org.hibernate.annotations.ManyToAny;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -33,7 +36,7 @@ public class AlunoEntity {
   @Email
   private String email;
   
-  @ManyToAny
+  @ManyToAny(fetch = FetchType.LAZY)
   @JoinTable(
     name = "turmas_relationships_alunos",
     joinColumns = @JoinColumn(name = "aluno_id"),
@@ -83,11 +86,16 @@ public class AlunoEntity {
   }
 
   public Set<TurmaEntity> getTurmas() {
+    if (turmas == null) {
+        turmas = new HashSet<>();
+    }
     return turmas;
   }
 
   public void setTurmas(Set<TurmaEntity> turmas) {
-    this.turmas = turmas;
+    if (Objects.nonNull(turmas)) {
+      this.turmas = turmas;
+    }
   }
 
   @Override

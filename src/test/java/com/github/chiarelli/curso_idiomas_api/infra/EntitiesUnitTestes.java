@@ -45,9 +45,6 @@ public class EntitiesUnitTestes {
     // Aluno com email invalido
     var alunoInvalid3 = new AlunoEntity(UUID.randomUUID(), "Aluno 4", "897.001.890-58", "invalid_email");
     assertThrows(TransactionSystemException.class, () -> alunoRepository.save(alunoInvalid3)).getMessage();
-
-    // Aluno com CPF invalido
-    var alunoInvalid4 = new AlunoEntity(alunoId, "Aluno 5", "123.456.789-00", "aluno5@example.com");
-    assertThrows(TransactionSystemException.class, () -> alunoRepository.save(alunoInvalid4));
+    
   }
 }

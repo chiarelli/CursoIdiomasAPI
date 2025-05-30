@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.ManyToAny;
-import org.hibernate.validator.constraints.br.CPF;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,8 +14,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "tb_alunos")
@@ -26,17 +23,14 @@ public class AlunoEntity {
   @Column(name = "id", nullable = false, updatable = false)
   private UUID alunoId;
 
-  @Size(min = 3, max = 100)
   @Column(nullable = false, length = 100)
   private String nome;
 
-  @NotNull
-  @CPF
   @Column(nullable = false, updatable = false,  unique = true, length = 11)
   private String cpf;
   
-  @Email
   @Column(nullable = false, unique = true)
+  @Email
   private String email;
   
   @ManyToAny

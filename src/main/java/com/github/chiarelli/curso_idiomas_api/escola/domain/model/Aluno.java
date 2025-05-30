@@ -6,11 +6,14 @@ import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class Aluno {
+public class Aluno implements AlunoInterface {
 
   @NotNull
   private UUID alunoId;
@@ -46,7 +49,7 @@ public class Aluno {
     this.email = email;
   }
 
-  void setTurmaMatriculada(Turma turma) {
+  void setTurmaMatriculada(TurmaInterface turma) {
     throw new IllegalArgumentException("implement method turmasMatriculadas");
   }
 
@@ -62,23 +65,28 @@ public class Aluno {
 
   // ##### Getters #####
 
+  @Override
   public UUID getAlunoId() {
     return alunoId;
   }
 
+  @Override
   public String getNome() {
     return nome;
   }
 
+  @Override
   public String getCpf() {
     return cpf;
   }
 
+  @Override
   public String getEmail() {
     return email;
   }
 
-  public Set<Turma> getTurmas() {
+  @Override
+  public Set<TurmaInterface> getTurmas() {
     return new HashSet<>(turmas);
   }
 

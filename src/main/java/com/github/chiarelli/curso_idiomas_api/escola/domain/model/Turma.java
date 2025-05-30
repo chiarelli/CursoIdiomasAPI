@@ -3,11 +3,14 @@ package com.github.chiarelli.curso_idiomas_api.escola.domain.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class Turma {
+public class Turma implements TurmaInterface {
 
   @Min(1)
   @NotNull
@@ -55,15 +58,18 @@ public class Turma {
 
   // ##### Getters #####
 
+  @Override
   public Integer getTurmaId() {
     return turmaId;
   }
 
+  @Override
   public Integer getAnoLetivo() {
     return anoLetivo;
   }
 
-  public Set<Aluno> getAlunos() {
+  @Override
+  public Set<AlunoInterface> getAlunos() {
     return new HashSet<>(alunos);
   }
 

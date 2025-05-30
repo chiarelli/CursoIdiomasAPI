@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AlunoRepository extends JpaRepository<AlunoEntity, UUID> {
+public interface AlunoRepository extends JpaRepository<AlunoPersistence, UUID> {
 
 }

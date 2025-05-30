@@ -20,7 +20,7 @@ import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "tb_alunos")
-public class AlunoEntity {
+public class AlunoPersistence {
   
   @Id
   @Column(name = "id", nullable = false, updatable = false)
@@ -44,14 +44,14 @@ public class AlunoEntity {
   )
   private Set<TurmaEntity> turmas;
 
-  public AlunoEntity(UUID alunoId, String nome, String cpf, String email) {
+  public AlunoPersistence(UUID alunoId, String nome, String cpf, String email) {
     this.alunoId = alunoId;
     this.nome = nome;
     this.cpf = cpf;
     this.email = email;
   }
 
-  public AlunoEntity() {}
+  public AlunoPersistence() {}
 
   public UUID getAlunoId() {
     return alunoId;

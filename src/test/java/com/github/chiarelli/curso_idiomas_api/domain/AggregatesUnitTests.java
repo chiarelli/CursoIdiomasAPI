@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Aluno;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
 
@@ -56,11 +57,11 @@ public class AggregatesUnitTests {
 
   @Test
   void turmaAggregateValidation() {
-    var turmaOk = new Turma(302, 2025);
+    TurmaInterface turmaOk = new Turma(302, 2025);
 
     assertDoesNotThrow(() -> validator.validate(turmaOk));
 
-    var turmaInvalid1 = new Turma(0, 1899);
+    TurmaInterface turmaInvalid1 = new Turma(0, 1899);
 
     var userMessages = assertThrows(DomainException.class, () -> validator.validate(turmaInvalid1))
       .getUserMessages();
@@ -75,7 +76,7 @@ public class AggregatesUnitTests {
       "deveria apresentar mensagem \"deve ser maior que ou igual à 1\""
     );
 
-    var turmaInvalid2 = new Turma(-1, 2500);
+    TurmaInterface turmaInvalid2 = new Turma(-1, 2500);
 
     userMessages = assertThrows(DomainException.class, () -> validator.validate(turmaInvalid2))
       .getUserMessages();
@@ -92,7 +93,7 @@ public class AggregatesUnitTests {
       "deveria apresentar mensagem \"deve ser maior que ou igual à 1\""
     );
 
-    var turmaInvalid3 = new Turma(null, 2025);
+    TurmaInterface turmaInvalid3 = new Turma(null, 2025);
 
     userMessages = assertThrows(DomainException.class, () -> validator.validate(turmaInvalid3))
       .getUserMessages();

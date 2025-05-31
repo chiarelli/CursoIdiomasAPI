@@ -18,6 +18,7 @@ import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJs
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.PageCollectionJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 
 import io.jkratz.mediator.core.Mediator;
@@ -64,8 +65,20 @@ public class AlunosController {
 
   @GetMapping("{id}")
   public AlunoJsonResponse buscarAlunoPorId(@PathVariable UUID id) {
-    // TODO implementar busca de aluno por id
-    throw new UnsupportedOperationException("implement method buscarAlunoPorId");
+    var query = new RecuperarAlunoPeloIdQuery(id);
+    var result = mediator.dispatch(query);
+    var turmaIds = result.getTurmas()
+      .stream()
+      .map(t -> t.getTurmaId())
+      .collect(Collectors.toSet());
+
+    return new AlunoJsonResponse(
+      result.getAlunoId(), 
+      result.getNome(), 
+      result.getEmail(), 
+      result.getCpf(), 
+      turmaIds
+    );
   }
   
   @PutMapping("{id}")

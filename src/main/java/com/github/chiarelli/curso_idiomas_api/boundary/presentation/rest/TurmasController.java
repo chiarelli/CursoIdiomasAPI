@@ -3,6 +3,7 @@ package com.github.chiarelli.curso_idiomas_api.boundary.presentation.rest;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,18 +14,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.NovaTurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.PageCollectionJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
+
+import io.jkratz.mediator.core.Mediator;
 
 @RestController
 @RequestMapping("api/v1/turmas")
 public class TurmasController {
 
+  @Autowired Mediator mediator;
+
   @PostMapping
-  public TurmaJsonResponse cadastrarTurma(@RequestBody TurmaJsonRequest turmaJsonRequest) {
-    // TODO implementar cadastro de turma
-    throw new UnsupportedOperationException("implement method cadastrarTurma");
+  public TurmaJsonResponse cadastrarTurma(@RequestBody NovaTurmaJsonRequest request) {
+    var cmd = new CadastrarNovaTurmaCommand(request.getTurmaId(), request.getAnoLetivo());
+    var result = mediator.dispatch(cmd);
+    return new TurmaJsonResponse(result.getTurmaId(), result.getAnoLetivo(), null);
   }
 
   @GetMapping

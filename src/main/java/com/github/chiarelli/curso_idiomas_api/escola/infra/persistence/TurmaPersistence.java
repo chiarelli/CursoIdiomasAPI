@@ -11,23 +11,19 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(
-  name = "tb_turmas",
-  uniqueConstraints = @UniqueConstraint(columnNames = {"turma_id", "ano_letivo"})
-)
+@Table(name = "tb_turmas")
 public class TurmaPersistence {
 
   @Id
   @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(name = "turma_id", nullable = false)
+  @Column(name = "turma_id", nullable = false, updatable = false, unique = true)
   private Integer turmaId;
 
-  @Column(name = "ano_letivo", nullable = false)
+  @Column(nullable = false)
   private Integer anoLetivo;
 
   @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
@@ -48,7 +44,6 @@ public class TurmaPersistence {
     }
     this.alunos = alunos;
   }
-
 
   public UUID getId() {
     return id;

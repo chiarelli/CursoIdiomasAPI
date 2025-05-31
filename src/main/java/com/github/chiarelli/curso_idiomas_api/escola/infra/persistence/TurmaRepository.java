@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TurmaRepository extends JpaRepository<TurmaPersistence, UUID> {
 
-  @Query("SELECT COUNT(t) FROM TurmaPersistence t WHERE t.turmaId = :turmaId AND t.anoLetivo = :anoLetivo")
-  long countByTurmaIdAndAnoLetivo(@Param("turmaId") Integer turmaId, @Param("anoLetivo") Integer anoLetivo);
+  @Query("SELECT COUNT(t) FROM TurmaPersistence t WHERE t.turmaId = :turmaId")
+  long countByTurmaId(@Param("turmaId") Integer turmaId);
 
   @Query("SELECT t FROM TurmaPersistence t WHERE t.turmaId IN :turmaIds")
   Set<TurmaPersistence> findAllByTurmaId(Iterable<Integer> turmaIds);

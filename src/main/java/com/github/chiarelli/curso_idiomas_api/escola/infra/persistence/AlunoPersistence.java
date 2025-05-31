@@ -44,6 +44,8 @@ public class AlunoPersistence {
   )
   private Set<TurmaPersistence> turmas;
 
+  public AlunoPersistence() {}
+
   public AlunoPersistence(UUID alunoId, String nome, String cpf, String email) {
     this.alunoId = alunoId;
     this.nome = nome;
@@ -51,7 +53,10 @@ public class AlunoPersistence {
     this.email = email;
   }
 
-  public AlunoPersistence() {}
+  public AlunoPersistence(UUID alunoId, String nome, String cpf, String email, Set<TurmaPersistence> turmas) {
+    this(alunoId, nome, cpf, email);
+    this.turmas = turmas;
+  }
 
   public UUID getAlunoId() {
     return alunoId;

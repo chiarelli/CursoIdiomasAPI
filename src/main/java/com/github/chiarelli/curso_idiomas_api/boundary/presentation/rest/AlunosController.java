@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.CriarAlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.PageCollectionJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
@@ -35,8 +36,14 @@ public class AlunosController {
   @Autowired Mediator mediator;
 
   @PostMapping
-  public ResponseEntity<AlunoJsonResponse> cadastrarAluno(@RequestBody AlunoJsonRequest request) {
-    var cmd = new RegistrarNovoAlunoCommand(request.getNome(), request.getCpf(), request.getEmail());
+  public ResponseEntity<AlunoJsonResponse> cadastrarAluno(@RequestBody CriarAlunoJsonRequest request) {
+    var cmd = new RegistrarNovoAlunoCommand(
+      request.getNome(), 
+      request.getCpf(), 
+      request.getEmail(), 
+      request.getTurmaMatricularIds()
+    );
+    
     var result = mediator.dispatch(cmd);
     var turmaIds = result.getTurmas()
       .stream()

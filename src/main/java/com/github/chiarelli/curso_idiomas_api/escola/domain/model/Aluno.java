@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Size;
 
 public class Aluno implements AlunoInterface {
 
+  public static final int QT_TURMAS_MIN = 1;
+
   @NotNull
   private UUID alunoId;
 
@@ -28,6 +30,7 @@ public class Aluno implements AlunoInterface {
   @Email
   private String email;
 
+  @Size(min = QT_TURMAS_MIN, message = "O aluno deve estar matriculado em pelo menos uma turma")
   private Set<Turma> turmas = new HashSet<>();
 
   public Aluno(UUID alunoId, String nome, String cpf, String email, Set<Turma> turmas) {
@@ -36,10 +39,15 @@ public class Aluno implements AlunoInterface {
     this.cpf = cpf;
     this.email = email;
 
-    for(Turma turma : turmas) {
-      turma.setAluno(this);
-      setTurmaMatriculada(turma);
+    if(turmas == null) {
+      turmas = Set.of();
     }
+
+    for(Turma turma : turmas) {
+      turma.adicionarAluno(this);
+    }
+
+    this.turmas = turmas;
   }
 
   public Aluno(UUID alunoId, String nome, String cpf, String email) {
@@ -49,8 +57,8 @@ public class Aluno implements AlunoInterface {
     this.email = email;
   }
 
-  void setTurmaMatriculada(TurmaInterface turma) {
-    throw new IllegalArgumentException("implement method turmasMatriculadas");
+  public void addTurma(Turma turma) {
+    turmas.add(turma);
   }
 
   // ##### Actions #####

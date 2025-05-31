@@ -2,7 +2,9 @@ package com.github.chiarelli.curso_idiomas_api.boundary.presentation.rest;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,9 @@ import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJs
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.PageCollectionJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 
+import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,10 +31,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/v1/alunos")
 public class AlunosController {
 
+  @Autowired Mediator mediator;
+
   @PostMapping
   public ResponseEntity<AlunoJsonResponse> cadastrarAluno(@RequestBody AlunoJsonRequest request) {
-    // TODO implementar cadastro de aluno
-    throw new UnsupportedOperationException("implement method cadastrarAluno");
+    var cmd = new RegistrarNovoAlunoCommand(request.getNome(), request.getCpf(), request.getEmail());
+    var result = mediator.dispatch(cmd);
+    var turmaIds = result.getTurmas()
+      .stream()
+      .map(t -> t.getTurmaId())
+      .collect(Collectors.toSet());
+    
+    var alunoResp = new AlunoJsonResponse(
+      result.getAlunoId(), 
+      result.getNome(), 
+      result.getEmail(), 
+      result.getCpf(), 
+      turmaIds
+    );
+
+    return ResponseEntity.status(201).body(alunoResp);
   }
 
   @GetMapping

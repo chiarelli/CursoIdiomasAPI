@@ -42,7 +42,7 @@ public class AlunoPersistence {
     joinColumns = @JoinColumn(name = "aluno_id"),
     inverseJoinColumns = @JoinColumn(name = "turma_id")
   )
-  private Set<TurmaEntity> turmas;
+  private Set<TurmaPersistence> turmas;
 
   public AlunoPersistence(UUID alunoId, String nome, String cpf, String email) {
     this.alunoId = alunoId;
@@ -85,14 +85,14 @@ public class AlunoPersistence {
     this.email = email;
   }
 
-  public Set<TurmaEntity> getTurmas() {
+  public Set<TurmaPersistence> getTurmas() {
     if (turmas == null) {
         turmas = new HashSet<>();
     }
     return turmas;
   }
 
-  public void setTurmas(Set<TurmaEntity> turmas) {
+  public void setTurmas(Set<TurmaPersistence> turmas) {
     if (Objects.nonNull(turmas)) {
       this.turmas = turmas;
     }

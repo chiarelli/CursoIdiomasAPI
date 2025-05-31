@@ -26,8 +26,8 @@ public class CadastrarTurmaUseCase implements RequestHandler<CadastrarNovaTurmaC
     var domain = CadastrarNovaTurmaCommand.toDomain(cmd);
     validator.validate(domain);
 
-    if (repository.countByTurmaId(domain.getTurmaId()) > 0) {
-      throw new DomainException("Turma com id " + domain.getTurmaId() + " já cadastrada");
+    if (repository.countByTurmaIdAndAnoLetivo(domain.getTurmaId(), domain.getAnoLetivo()) > 0) {
+      throw new DomainException("Turma com id " + domain.getTurmaId() + " já cadastrada para o ano letivo " + domain.getAnoLetivo());
     }
 
     var persistence = new TurmaPersistence(UUID.randomUUID(), domain.getTurmaId(), domain.getAnoLetivo());

@@ -1,4 +1,4 @@
-package com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos;
+package com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos;
 
 import java.util.Set;
 import java.util.UUID;

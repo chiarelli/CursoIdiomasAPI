@@ -1,4 +1,4 @@
-package com.github.chiarelli.curso_idiomas_api.boundary.presentation.rest;
+package com.github.chiarelli.curso_idiomas_api.escola.presentation.rest;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonResponse;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.NovaTurmaJsonRequest;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.PageCollectionJsonResponse;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonRequest;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonRequest;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonResponse;
 
 import io.jkratz.mediator.core.Mediator;
 

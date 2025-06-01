@@ -1,4 +1,4 @@
-package com.github.chiarelli.curso_idiomas_api.escola.application.exceptions;
+package com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions;
 
 public class NotFoundException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.github.chiarelli.curso_idiomas_api.boundary.presentation.rest;
+package com.github.chiarelli.curso_idiomas_api.escola.presentation.rest;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonRequest;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.AlunoJsonResponse;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.CriarAlunoJsonRequest;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.PageCollectionJsonResponse;
-import com.github.chiarelli.curso_idiomas_api.boundary.presentation.dtos.TurmaJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonRequest;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.CriarAlunoJsonRequest;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonResponse;
 
 import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Max;

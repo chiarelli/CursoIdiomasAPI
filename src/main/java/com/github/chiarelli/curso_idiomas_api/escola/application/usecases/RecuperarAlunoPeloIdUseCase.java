@@ -3,11 +3,11 @@ package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.chiarelli.curso_idiomas_api.escola.application.exceptions.NotFoundException;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Aluno;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 import io.jkratz.mediator.core.RequestHandler;
 

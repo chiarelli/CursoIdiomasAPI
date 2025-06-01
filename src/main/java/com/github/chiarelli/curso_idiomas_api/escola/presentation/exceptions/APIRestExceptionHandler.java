@@ -1,4 +1,4 @@
-package com.github.chiarelli.curso_idiomas_api.boundary.application.exceptions;
+package com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions;
 
 import java.util.Map;
 
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.github.chiarelli.curso_idiomas_api.escola.application.exceptions.NotFoundException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 
 @ControllerAdvice

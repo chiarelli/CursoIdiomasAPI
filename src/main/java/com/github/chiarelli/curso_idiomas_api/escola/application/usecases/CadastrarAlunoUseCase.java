@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
@@ -31,27 +30,12 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
   public AlunoInterface handle(RegistrarNovoAlunoCommand cmd) {
 
     var turmasPers = trRepo.findAllByTurmaId(cmd.getTurmaMatricularIds());
+    var turmas = turmasPers.stream().map(TurmaMapper::toDomain).collect(Collectors.toSet());
 
-    if(turmasPers.size() < 1) {
-      throw new DomainException("O aluno deve ser matriculado em pelo menos uma turma");
-    }
-
-    // Mapeia o payload do comando para o aggregate
     var aluno = RegistrarNovoAlunoCommand.toDomain(UUID.randomUUID(), cmd);
+    aluno.matricularEm(turmas);
 
-    // Valida se aluno pode ser adicionado às turmas
-    var turmas = turmasPers.stream()
-      .map(TurmaMapper::toDomain)
-      .collect(Collectors.toSet());
-
-    turmas.forEach(t -> {
-      t.adicionarAluno(aluno);
-      aluno.addTurma(t);
-      validator.validate(t);
-    });
-
-    // Valida o aluno domain
-    validator.validate(aluno);
+    validator.validate(aluno); // Valida o agregado após as regras de negócio
 
     // Mapeia o aluno domain para o persistence
     var alunoPers = new AlunoPersistence(
@@ -64,7 +48,6 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
 
     // Salva o aluno
     alunoPers = alRepo.save(alunoPers);
-
     return AlunoMapper.toDomain(alunoPers);
   }
 

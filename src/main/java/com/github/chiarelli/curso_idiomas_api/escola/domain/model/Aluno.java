@@ -1,11 +1,13 @@
 package com.github.chiarelli.curso_idiomas_api.escola.domain.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 
@@ -39,11 +41,11 @@ public class Aluno implements AlunoInterface {
     this.cpf = cpf;
     this.email = email;
 
-    if(turmas == null) {
+    if (turmas == null) {
       turmas = Set.of();
     }
 
-    for(Turma turma : turmas) {
+    for (Turma turma : turmas) {
       turma.adicionarAluno(this);
     }
 
@@ -67,8 +69,19 @@ public class Aluno implements AlunoInterface {
     throw new IllegalArgumentException("implement method cadastrarAluno");
   }
 
-  public void excluirAluno(Aluno aluno) {
+  public void removerTurma(Aluno aluno) {
     throw new IllegalArgumentException("implement method excluirAluno");
+  }
+
+  public void matricularEm(Set<Turma> turmas) {
+    if (turmas == null || turmas.isEmpty()) {
+      throw new DomainException("Aluno deve ser matriculado em pelo menos uma turma");
+    }
+
+    for (Turma t : turmas) {
+      t.adicionarAluno(this);
+      this.turmas.add(t);
+    }
   }
 
   // ##### Getters #####
@@ -95,7 +108,7 @@ public class Aluno implements AlunoInterface {
 
   @Override
   public Set<TurmaInterface> getTurmas() {
-    return new HashSet<>(turmas);
+    return Collections.unmodifiableSet(turmas);
   }
 
 }

@@ -42,7 +42,7 @@ public class RegistrarNovoAlunoCommand implements Request<AlunoInterface> {
     return new HashSet<>(turmaMatricularIds);
   }
 
-  public static Aluno toDomain(UUID alunoId, RegistrarNovoAlunoCommand aluno) {
-    return new Aluno(alunoId, aluno.getNome(), aluno.getCpf(), aluno.getEmail());
+  public static Aluno toDomain(UUID alunoId, RegistrarNovoAlunoCommand cmd) {
+    return new Aluno(alunoId, cmd.getNome(), cmd.getCpf(), cmd.getEmail());
   }
 }

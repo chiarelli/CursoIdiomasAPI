@@ -1,5 +1,6 @@
 package com.github.chiarelli.curso_idiomas_api.escola.domain.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ public class Turma implements TurmaInterface {
 
   @Override
   public Set<AlunoInterface> getAlunos() {
-    return new HashSet<>(alunos);
+    return Collections.unmodifiableSet(alunos);
   }
 
 }

@@ -11,10 +11,9 @@ public class TurmaMapper {
 
   public static Turma toDomain(TurmaPersistence persistence) {
     var alunos = persistence.getAlunos().stream()
-      .map(AlunoMapper::toDomain)
-      .collect(Collectors.toSet());    
-        
+      .map(AlunoMapper::toDomainWithoutTurmas)  // ✅ sem turmas
+      .collect(Collectors.toSet());
+
     return new Turma(persistence.getTurmaId(), persistence.getAnoLetivo(), alunos);
   }
-
 }

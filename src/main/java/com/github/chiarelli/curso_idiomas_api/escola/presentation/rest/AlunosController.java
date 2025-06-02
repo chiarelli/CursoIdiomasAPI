@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarAlunosQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.CriarAlunoJsonRequest;
@@ -63,11 +65,30 @@ public class AlunosController {
 
   @GetMapping
   public PageCollectionJsonResponse<AlunoJsonResponse> listarAlunos(
-    @RequestParam @Min(1) Integer page,
-    @RequestParam @Min(1) @Max(100) Integer size
+    @RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
+    @RequestParam(name = "size", defaultValue = "10") @Min(1) @Max(100) Integer size
   ) {
-    // TODO implementar listagem de alunos
-    throw new UnsupportedOperationException("implement method listarAlunos");
+    var query = new PageListarAlunosQuery(page, size);
+    var result = mediator.dispatch(query);
+
+    return new PageCollectionJsonResponse<>(
+        result.getNumberOfElements(),
+        page,
+        result.getSize(),
+        result.getTotalElements(),
+        result.getTotalPages(),
+        result.getContent().stream().map(aluno ->
+            new AlunoJsonResponse(
+                aluno.getAlunoId(),
+                aluno.getNome(),
+                aluno.getEmail(),
+                aluno.getCpf(),
+                aluno.getTurmas().stream()
+                    .map(TurmaInterface::getTurmaId)
+                    .collect(Collectors.toSet())
+            )
+        ).collect(Collectors.toList())
+    );
   }
 
   @GetMapping("{id}")

@@ -205,7 +205,7 @@ public class EntitiesUnitTestes {
     }).getUserMessages();
 
     assertTrue(
-      errorMsgs.get("error").equals("Lotação da turma excedida"), 
+      errorMsgs.get("alunos").equals("Lotação da turma excedida"), 
       "deveria apresentar mensagem \"Lotação da turma excedida\""
     );
 

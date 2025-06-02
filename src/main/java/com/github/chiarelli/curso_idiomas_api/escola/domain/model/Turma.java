@@ -50,7 +50,7 @@ public class Turma implements TurmaInterface {
   }
 
   public void adicionarAluno(Aluno aluno) {
-    if(alunos.size() >= LOTACAO_MAX) {
+    if(alunos.size() > LOTACAO_MAX) {
       throw new DomainException("Lotação da turma excedida");
     }
     alunos.add(aluno);

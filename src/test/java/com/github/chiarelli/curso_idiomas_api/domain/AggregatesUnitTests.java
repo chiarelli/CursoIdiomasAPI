@@ -57,11 +57,11 @@ public class AggregatesUnitTests {
 
   @Test
   void turmaAggregateValidation() {
-    TurmaInterface turmaOk = new Turma(302, 2025);
+    TurmaInterface turmaOk = new Turma(UUID.randomUUID(), 302, 2025);
 
     assertDoesNotThrow(() -> validator.validate(turmaOk));
 
-    TurmaInterface turmaInvalid1 = new Turma(0, 1899);
+    TurmaInterface turmaInvalid1 = new Turma(UUID.randomUUID(), 0, 1899);
 
     var userMessages = assertThrows(DomainException.class, () -> validator.validate(turmaInvalid1))
       .getUserMessages();
@@ -76,7 +76,7 @@ public class AggregatesUnitTests {
       "deveria apresentar mensagem \"deve ser maior que ou igual à 1\""
     );
 
-    TurmaInterface turmaInvalid2 = new Turma(-1, 2500);
+    TurmaInterface turmaInvalid2 = new Turma(UUID.randomUUID(), -1, 2500);
 
     userMessages = assertThrows(DomainException.class, () -> validator.validate(turmaInvalid2))
       .getUserMessages();
@@ -93,7 +93,7 @@ public class AggregatesUnitTests {
       "deveria apresentar mensagem \"deve ser maior que ou igual à 1\""
     );
 
-    TurmaInterface turmaInvalid3 = new Turma(null, 2025);
+    TurmaInterface turmaInvalid3 = new Turma(UUID.randomUUID(), null, 2025);
 
     userMessages = assertThrows(DomainException.class, () -> validator.validate(turmaInvalid3))
       .getUserMessages();

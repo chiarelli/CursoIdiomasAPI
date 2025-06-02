@@ -11,16 +11,21 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "tb_turmas")
+@Table(
+  name = "tb_turmas",
+  uniqueConstraints = @UniqueConstraint(columnNames = {"turma_id", "ano_letivo"})
+)
+
 public class TurmaPersistence {
 
   @Id
   @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(name = "turma_id", nullable = false, updatable = false, unique = true)
+  @Column(name = "turma_id", nullable = false)
   private Integer turmaId;
 
   @Column(nullable = false)

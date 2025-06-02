@@ -1,5 +1,7 @@
 package com.github.chiarelli.curso_idiomas_api.escola.domain.commands;
 
+import java.util.UUID;
+
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
 
@@ -23,8 +25,8 @@ public class CadastrarNovaTurmaCommand implements Request<TurmaInterface> {
     return anoLetivo;
   }
 
-  public static Turma toDomain(CadastrarNovaTurmaCommand cmd) {
-    return new Turma(cmd.getTurmaId(), cmd.getAnoLetivo());
+  public static Turma toDomain(UUID id, CadastrarNovaTurmaCommand cmd) {
+    return new Turma(id, cmd.getTurmaId(), cmd.getAnoLetivo());
     
   }
 }

@@ -1,25 +1,23 @@
 package com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CriarAlunoJsonRequest extends AlunoJsonRequest {
   
   @JsonProperty("turma_matricular_ids")
-  private final Set<Integer> turmaMatricularIds;
+  private final Set<UUID> turmaMatricularIds;
 
-  public CriarAlunoJsonRequest(String nome, String cpf, String email, Set<Integer> turmaMatricularIds) {
+  public CriarAlunoJsonRequest(String nome, String cpf, String email, Set<UUID> turmaMatricularIds) {
     super(nome, cpf, email);
-    if(turmaMatricularIds == null) {
-      turmaMatricularIds = new HashSet<>();
-    }
     this.turmaMatricularIds = turmaMatricularIds;
   }
 
-  public Set<Integer> getTurmaMatricularIds() {
-    return new HashSet<>(turmaMatricularIds);
+  public Set<UUID> getTurmaMatricularIds() {
+    return Collections.unmodifiableSet(turmaMatricularIds);
   }
 
 }

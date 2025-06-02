@@ -1,6 +1,6 @@
 package com.github.chiarelli.curso_idiomas_api.escola.domain.commands;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,15 +14,12 @@ public class RegistrarNovoAlunoCommand implements Request<AlunoInterface> {
   private final String nome;
   private final String cpf;
   private final String email;
-  private final Set<Integer> turmaMatricularIds;
+  private final Set<UUID> turmaMatricularIds;
 
-  public RegistrarNovoAlunoCommand(String nome, String cpf, String email, Set<Integer> turmaMatricularIds) {
+  public RegistrarNovoAlunoCommand(String nome, String cpf, String email, Set<UUID> turmaMatricularIds) {
     this.nome = nome;
     this.cpf = cpf;
     this.email = email;
-    if(turmaMatricularIds == null) {
-      turmaMatricularIds = Set.of();
-    }
     this.turmaMatricularIds = turmaMatricularIds;
   }
 
@@ -38,8 +35,8 @@ public class RegistrarNovoAlunoCommand implements Request<AlunoInterface> {
     return email;
   }
 
-  public Set<Integer> getTurmaMatricularIds() {
-    return new HashSet<>(turmaMatricularIds);
+  public Set<UUID> getTurmaMatricularIds() {
+    return Collections.unmodifiableSet(turmaMatricularIds);
   }
 
   public static Aluno toDomain(UUID alunoId, RegistrarNovoAlunoCommand cmd) {

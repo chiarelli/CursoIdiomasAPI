@@ -32,7 +32,7 @@ public class TurmasController {
   public TurmaJsonResponse cadastrarTurma(@RequestBody NovaTurmaJsonRequest request) {
     var cmd = new CadastrarNovaTurmaCommand(request.getTurmaId(), request.getAnoLetivo());
     var result = mediator.dispatch(cmd);
-    return new TurmaJsonResponse(result.getTurmaId(), result.getAnoLetivo(), null);
+    return new TurmaJsonResponse(result.getNumeroTurma(), result.getAnoLetivo(), null);
   }
 
   @GetMapping

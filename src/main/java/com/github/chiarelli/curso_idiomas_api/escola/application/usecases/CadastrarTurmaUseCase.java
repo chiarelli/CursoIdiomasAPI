@@ -23,18 +23,18 @@ public class CadastrarTurmaUseCase implements RequestHandler<CadastrarNovaTurmaC
 
   @Override
   public TurmaInterface handle(CadastrarNovaTurmaCommand cmd) {
-    var domain = CadastrarNovaTurmaCommand.toDomain(cmd);
+    var domain = CadastrarNovaTurmaCommand.toDomain(UUID.randomUUID(), cmd);
     validator.validate(domain);
 
-    if (repository.countByTurmaId(domain.getTurmaId()) > 0) {
-      throw new DomainException("Turma com id " + domain.getTurmaId() + " já cadastrada");
+    if (repository.countByTurmaIdAndAnoLetivo(domain.getNumeroTurma(), domain.getAnoLetivo()) > 0) {
+      throw new DomainException("Turma com id " + domain.getNumeroTurma() + " já cadastrada");
     }
 
-    var persistence = new TurmaPersistence(UUID.randomUUID(), domain.getTurmaId(), domain.getAnoLetivo());
+    var persistence = new TurmaPersistence(domain.getTurmaId(), domain.getNumeroTurma(), domain.getAnoLetivo());
 
     persistence = repository.save(persistence);
 
-    return new Turma(persistence.getTurmaId(), persistence.getAnoLetivo());
+    return new Turma(persistence.getId(), persistence.getTurmaId(), persistence.getAnoLetivo());
   }
 
 }

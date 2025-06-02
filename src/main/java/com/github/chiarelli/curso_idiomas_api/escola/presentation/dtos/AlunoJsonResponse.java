@@ -13,9 +13,9 @@ public class AlunoJsonResponse {
   private final String cpf;
   
   @JsonProperty("turma_ids")
-  private final Set<Integer> turmaIds;
+  private final Set<UUID> turmaIds;
 
-  public AlunoJsonResponse(UUID id, String nome, String email, String cpf, Set<Integer> turmasIds) {
+  public AlunoJsonResponse(UUID id, String nome, String email, String cpf, Set<UUID> turmasIds) {
     this.id = id;
     this.nome = nome;
     this.email = email;
@@ -39,7 +39,7 @@ public class AlunoJsonResponse {
     return cpf;
   }
 
-  public Set<Integer> getTurmaIds() {
+  public Set<UUID> getTurmaIds() {
     return turmaIds;
   }
 

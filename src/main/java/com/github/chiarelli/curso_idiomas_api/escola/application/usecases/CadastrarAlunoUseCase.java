@@ -29,13 +29,14 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
   @Transactional
   public AlunoInterface handle(RegistrarNovoAlunoCommand cmd) {
 
-    var turmasPers = trRepo.findAllByTurmaId(cmd.getTurmaMatricularIds());
+    var turmasPers = trRepo.findAllById(cmd.getTurmaMatricularIds()).stream().collect(Collectors.toSet());
     var turmas = turmasPers.stream().map(TurmaMapper::toDomain).collect(Collectors.toSet());
 
     var aluno = RegistrarNovoAlunoCommand.toDomain(UUID.randomUUID(), cmd);
     aluno.matricularEm(turmas);
 
-    validator.validate(aluno); // Valida o agregado após as regras de negócio
+    validator.validate(aluno); // Valida o aluno após as regras de negócio
+    turmas.forEach(validator::validate); // Valida as turmas após as regras de negócio
 
     // Mapeia o aluno domain para o persistence
     var alunoPers = new AlunoPersistence(

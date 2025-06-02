@@ -1,5 +1,7 @@
 package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -7,6 +9,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.queries.Recuper
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Aluno;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 import io.jkratz.mediator.core.RequestHandler;
@@ -32,7 +35,8 @@ public class RecuperarAlunoPeloIdUseCase implements RequestHandler<RecuperarAlun
       persistence.getAlunoId(), 
       persistence.getNome(), 
       persistence.getCpf(), 
-      persistence.getEmail()
+      persistence.getEmail(),
+      persistence.getTurmas().stream().map(TurmaMapper::toDomain).collect(Collectors.toSet())
     );
 
     return aggregate;

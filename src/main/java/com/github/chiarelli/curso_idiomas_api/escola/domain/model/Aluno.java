@@ -48,7 +48,7 @@ public class Aluno implements AlunoInterface {
     }
 
     for (Turma turma : turmas) {
-      turma.adicionarAluno(this);
+      turma.addAluno(this);
     }
 
     this.turmas = turmas;
@@ -75,7 +75,7 @@ public class Aluno implements AlunoInterface {
     }
 
     for (Turma t : turmas) {
-      t.adicionarAluno(this);
+      t.addAluno(this);
       this.turmas.add(t);
     }
   }

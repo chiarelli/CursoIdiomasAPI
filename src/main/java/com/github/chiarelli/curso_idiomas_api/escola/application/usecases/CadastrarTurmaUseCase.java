@@ -14,6 +14,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaPers
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
 
 import io.jkratz.mediator.core.RequestHandler;
+import jakarta.transaction.Transactional;
 
 @Component
 public class CadastrarTurmaUseCase implements RequestHandler<CadastrarNovaTurmaCommand, TurmaInterface> {
@@ -22,6 +23,7 @@ public class CadastrarTurmaUseCase implements RequestHandler<CadastrarNovaTurmaC
   @Autowired TurmaRepository repository;
 
   @Override
+  @Transactional
   public TurmaInterface handle(CadastrarNovaTurmaCommand cmd) {
     var domain = CadastrarNovaTurmaCommand.toDomain(UUID.randomUUID(), cmd);
     validator.validate(domain);

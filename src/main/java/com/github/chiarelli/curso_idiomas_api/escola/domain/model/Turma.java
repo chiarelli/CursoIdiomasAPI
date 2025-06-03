@@ -8,7 +8,10 @@ import java.util.UUID;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoMatriculadoEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoRemovidoTurmoEvent;
 
+import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -40,24 +43,38 @@ public class Turma implements TurmaInterface {
   public Turma(UUID turmaId, Integer turmaNumero, Integer anoLetivo) {
     this.turmaId = turmaId;
     this.numeroTurma = turmaNumero;
-    alterarAnoLetivo(anoLetivo);
+    setAnoLetivo(anoLetivo);
   }
 
-  // ##### Actions #####
-
-  public void alterarAnoLetivo(Integer anoLetivo) {
+  public void setAnoLetivo(Integer anoLetivo) {
     this.anoLetivo = anoLetivo;
   }
-
-  public void adicionarAluno(Aluno aluno) {
+  
+  public void addAluno(Aluno aluno) {
     if(alunos.size() > LOTACAO_MAX) {
       throw new DomainException("Lotação da turma excedida");
     }
     alunos.add(aluno);
   }
-
-  public void removerAluno(Aluno aluno) {
+  
+  public void removeAluno(Aluno aluno) {
     throw new IllegalArgumentException("implement method removerAluno");
+  }
+  
+  // ##### Actions #####
+
+  public void matricularAluno(Mediator mediator, Aluno aluno) {
+    addAluno(aluno);
+    this.addAluno(aluno);
+    
+    mediator.emit(new AlunoMatriculadoEvent(aluno.getAlunoId(), this.getTurmaId()));
+  }
+
+  public void desmatricularAluno(Mediator mediator, Aluno aluno) {
+    removeAluno(aluno);
+    aluno.removerTurma(this);
+
+    mediator.emit(new AlunoRemovidoTurmoEvent(aluno.getAlunoId(), this.getTurmaId()));
   }
 
   // ##### Getters #####

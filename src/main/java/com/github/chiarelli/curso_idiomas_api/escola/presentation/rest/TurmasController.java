@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
@@ -32,9 +33,9 @@ public class TurmasController {
 
   @PostMapping
   public TurmaJsonResponse cadastrarTurma(@RequestBody NovaTurmaJsonRequest request) {
-    var cmd = new CadastrarNovaTurmaCommand(request.getTurmaId(), request.getAnoLetivo());
+    var cmd = new CadastrarNovaTurmaCommand(request.getNumero(), request.getAnoLetivo());
     var result = mediator.dispatch(cmd);
-    return new TurmaJsonResponse(result.getNumeroTurma(), result.getAnoLetivo(), null);
+    return new TurmaJsonResponse(result.getTurmaId(), result.getNumeroTurma(), result.getAnoLetivo(), null);
   }
 
   @GetMapping

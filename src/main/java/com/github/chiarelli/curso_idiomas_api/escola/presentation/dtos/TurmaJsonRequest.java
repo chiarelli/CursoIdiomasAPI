@@ -1,21 +1,25 @@
 package com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos;
 
 import java.util.Set;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TurmaJsonRequest extends NovaTurmaJsonRequest {
 
-  private final Set<AlunoJsonResponse> alunos;
+  @JsonProperty("aluno_ids")
+  private final Set<UUID> alunoIds;
 
-  public TurmaJsonRequest(Integer turmaId, Integer anoLetivo, Set<AlunoJsonResponse> alunos) {
-    super(turmaId, anoLetivo);
-    if (alunos == null) {
-      alunos = Set.of();
+  public TurmaJsonRequest(UUID id, Integer numero, Integer anoLetivo, Set<UUID> alunoIds) {
+    super(id, numero, anoLetivo);
+    if (alunoIds == null) {
+      alunoIds = Set.of();
     }
-    this.alunos = alunos;
+    this.alunoIds = alunoIds;
   }
 
-   public Set<AlunoJsonResponse> getAlunos() {
-    return alunos;
+   public Set<UUID> getAlunoIds() {
+    return alunoIds;
   }
 
 }

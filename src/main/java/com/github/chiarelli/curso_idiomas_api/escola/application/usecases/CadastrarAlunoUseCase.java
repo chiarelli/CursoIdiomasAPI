@@ -33,7 +33,7 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
     var turmas = turmasPers.stream().map(TurmaMapper::toDomain).collect(Collectors.toSet());
 
     var aluno = RegistrarNovoAlunoCommand.toDomain(UUID.randomUUID(), cmd);
-    aluno.matricularEm(turmas);
+    aluno.adicionarTurma(turmas);
 
     validator.validate(aluno); // Valida o aluno após as regras de negócio
     turmas.forEach(validator::validate); // Valida as turmas após as regras de negócio

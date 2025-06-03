@@ -73,7 +73,7 @@ public class Aluno implements AlunoInterface {
     throw new IllegalArgumentException("implement method excluirAluno");
   }
 
-  public void matricularEm(Set<Turma> turmas) {
+  public void adicionarTurma(Set<Turma> turmas) {
     if (turmas == null || turmas.isEmpty()) {
       throw new DomainException("Aluno deve ser matriculado em pelo menos uma turma");
     }
@@ -82,6 +82,18 @@ public class Aluno implements AlunoInterface {
       t.adicionarAluno(this);
       this.turmas.add(t);
     }
+  }
+
+  public void matricularAluno(Turma turma) {
+    turma.adicionarAluno(this);
+    this.turmas.add(turma);
+    // TODO Emitir evento de dominio
+  }
+
+  public void desmatricularAluno(Turma turma) {
+    turma.removerAluno(this);
+    this.turmas.remove(turma);
+    // TODO Emitir evento de dominio
   }
 
   // ##### Getters #####

@@ -24,7 +24,8 @@ public class AggregatesUnitTests {
 
   @Test
   void alunoAggregateValidation() {
-    var alunoOk = new Aluno(UUID.randomUUID(), "Teste", "390.898.981-74", "8f6wZ@example.com", Set.of());
+    var turma = new Turma(UUID.randomUUID(), 302, 2025);
+    var alunoOk = new Aluno(UUID.randomUUID(), "Teste", "390.898.981-74", "8f6wZ@example.com", Set.of(turma));
 
     assertDoesNotThrow(() -> validator.validate(alunoOk));
 
@@ -72,7 +73,7 @@ public class AggregatesUnitTests {
     );
 
     assertTrue(
-      userMessages.get("turmaId").equals("deve ser maior que ou igual à 1"), 
+      userMessages.get("numeroTurma").equals("deve ser maior que ou igual à 1"), 
       "deveria apresentar mensagem \"deve ser maior que ou igual à 1\""
     );
 
@@ -89,7 +90,7 @@ public class AggregatesUnitTests {
     );
 
     assertTrue(
-      userMessages.get("turmaId").equals("deve ser maior que ou igual à 1"), 
+      userMessages.get("numeroTurma").equals("deve ser maior que ou igual à 1"), 
       "deveria apresentar mensagem \"deve ser maior que ou igual à 1\""
     );
 
@@ -99,7 +100,7 @@ public class AggregatesUnitTests {
       .getUserMessages();
 
     assertTrue(
-      userMessages.get("turmaId").equals("não deve ser nulo"), 
+      userMessages.get("numeroTurma").equals("não deve ser nulo"), 
       "deveria apresentar mensagem \"não deve ser nulo\""
     );
   }

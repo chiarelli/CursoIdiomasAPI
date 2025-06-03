@@ -10,7 +10,9 @@ import org.hibernate.validator.constraints.br.CPF;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoCadastradoEvent;
 
+import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -63,13 +65,7 @@ public class Aluno implements AlunoInterface {
     turmas.add(turma);
   }
 
-  // ##### Actions #####
-
-  public void cadastrarAluno(Aluno aluno) {
-    throw new IllegalArgumentException("implement method cadastrarAluno");
-  }
-
-  public void removerTurma(Aluno aluno) {
+  public void removerTurma(Turma turma) {
     throw new IllegalArgumentException("implement method excluirAluno");
   }
 
@@ -84,18 +80,20 @@ public class Aluno implements AlunoInterface {
     }
   }
 
-  public void matricularAluno(Turma turma) {
-    turma.adicionarAluno(this);
-    this.turmas.add(turma);
-    // TODO Emitir evento de dominio
+  // ##### Actions #####
+
+  public void cadastrarAluno(Mediator mediator) {
+    mediator.emit(new AlunoCadastradoEvent(this.getAlunoId()));
   }
 
-  public void desmatricularAluno(Turma turma) {
-    turma.removerAluno(this);
-    this.turmas.remove(turma);
-    // TODO Emitir evento de dominio
+  public void atualizarDadosAluno(Mediator mediator) {
+    throw new IllegalArgumentException("implement method atualizarDadosAluno");
   }
-
+  
+  public void excluirAlunoAluno(Mediator mediator) {
+    throw new IllegalArgumentException("implement method excluirAluno");
+  }
+  
   // ##### Getters #####
 
   @Override

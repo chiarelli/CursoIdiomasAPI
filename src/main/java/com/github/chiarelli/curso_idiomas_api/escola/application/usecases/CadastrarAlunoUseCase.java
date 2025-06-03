@@ -3,27 +3,44 @@ package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoCadastradoEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoPersistence;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
 
+import io.jkratz.mediator.core.EventHandler;
+import io.jkratz.mediator.core.Mediator;
 import io.jkratz.mediator.core.RequestHandler;
 import jakarta.transaction.Transactional;
 
 @Component
 public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoCommand, AlunoInterface> {
 
-  @Autowired InstanceValidator validator;
-  @Autowired AlunoRepository alRepo;
-  @Autowired TurmaRepository trRepo;
+  private final InstanceValidator validator;
+  private final AlunoRepository alRepo;
+  private final TurmaRepository trRepo;
+  private final Mediator mediator;
+
+  public CadastrarAlunoUseCase(
+    InstanceValidator validator,
+    AlunoRepository alRepo,
+    TurmaRepository trRepo,
+    Mediator mediator
+  ) {
+    this.validator = validator;
+    this.alRepo = alRepo;
+    this.trRepo = trRepo;
+    this.mediator = mediator;
+  }
 
   @Override
   @Transactional
@@ -49,7 +66,23 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
 
     // Salva o aluno
     alunoPers = alRepo.save(alunoPers);
-    return AlunoMapper.toDomain(alunoPers);
+    
+    aluno = AlunoMapper.toDomain(alunoPers);
+    aluno.cadastrarAluno(mediator); // Emitir evento de domínio
+
+    return aluno;
+  }
+
+  @Component
+  public static class AlunoCadastradoHandler implements EventHandler<AlunoCadastradoEvent> {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AlunoCadastradoHandler.class);
+
+    @Override
+    public void handle(AlunoCadastradoEvent event) {
+      logger.info("Aluno cadastrado: " + event.getAlunoId());
+    }
+       
   }
 
 }

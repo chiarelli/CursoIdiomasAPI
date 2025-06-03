@@ -122,4 +122,17 @@ public class AlunoPersistence {
     this.cpf = this.cpf.replaceAll("[^0-9]", "");
   }
 
+  @Override
+  public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof AlunoPersistence)) return false;
+      AlunoPersistence aluno = (AlunoPersistence) o;
+      return alunoId != null && alunoId.equals(aluno.alunoId);
+  }
+
+  @Override
+  public int hashCode() {
+      return Objects.hashCode(alunoId);
+  }
+
 }

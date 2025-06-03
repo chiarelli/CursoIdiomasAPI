@@ -18,7 +18,6 @@ import jakarta.persistence.UniqueConstraint;
   name = "tb_turmas",
   uniqueConstraints = @UniqueConstraint(columnNames = {"turma_id", "ano_letivo"})
 )
-
 public class TurmaPersistence {
 
   @Id
@@ -85,6 +84,19 @@ public class TurmaPersistence {
     if(Objects.nonNull(alunos)) {
       this.alunos = alunos;
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof TurmaPersistence)) return false;
+    TurmaPersistence turma = (TurmaPersistence) o;
+    return turmaId != null && turmaId.equals(turma.turmaId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(turmaId);
   }
 
 }

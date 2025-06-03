@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarTurmasDoAlunoQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarTurmasQuery;
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarTurmaPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
@@ -72,8 +73,16 @@ public class TurmasController {
 
   @GetMapping("{id}")
   public TurmaJsonResponse buscarTurmaPorId(@PathVariable UUID id) {
-    // TODO implementar busca de turma por id
-    throw new UnsupportedOperationException("implement method buscarTurmaPorId");
+    var query = new RecuperarTurmaPeloIdQuery(id);
+    var result = mediator.dispatch(query);
+    return new TurmaJsonResponse(
+      result.getTurmaId(),
+      result.getNumeroTurma(), 
+      result.getAnoLetivo(), 
+      result.getAlunos().stream()
+        .map(aluno -> aluno.getAlunoId())
+        .collect(Collectors.toSet())
+    );
   }
 
   @PutMapping("{id}")

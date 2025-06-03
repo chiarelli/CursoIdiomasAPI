@@ -65,8 +65,8 @@ public class Aluno implements AlunoInterface {
     turmas.add(turma);
   }
 
-  public void removerTurma(Turma turma) {
-    throw new IllegalArgumentException("implement method excluirAluno");
+  public void removeTurma(Turma turma) {
+    turmas.remove(turma);
   }
 
   public void adicionarTurma(Set<Turma> turmas) {

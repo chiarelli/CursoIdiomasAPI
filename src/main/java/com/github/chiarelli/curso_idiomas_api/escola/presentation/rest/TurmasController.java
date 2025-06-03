@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonRequest;
@@ -62,12 +61,13 @@ public class TurmasController {
     throw new UnsupportedOperationException("implement method excluirTurma");
   }
 
-  // GET /api/v1/turmas/{id}/alunos – Listar todos os alunos da turma
-
-  @GetMapping("{id}/alunos")
-  public List<AlunoJsonResponse> listarAlunosDaTurma(@PathVariable UUID id) {
-    // TODO implementar listagem de alunos da turma
-    throw new UnsupportedOperationException("implement method listarAlunosDaTurma");
+  @GetMapping("{turmaId}/aluno/{alunoId}")
+  public List<TurmaJsonResponse> listarTurmasDoAluno(
+    @PathVariable UUID turmaId, 
+    @PathVariable UUID alunoId
+  ) {
+    // TODO implementar listagem de turmas do aluno
+    throw new UnsupportedOperationException("implement method listarTurmasDoAluno");
   }
 
 }

@@ -22,7 +22,6 @@ import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJson
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.CriarAlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonResponse;
 
 import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Max;
@@ -124,10 +123,12 @@ public class AlunosController {
     throw new UnsupportedOperationException("implement method buscarAlunoPorId");
   }
 
-  @GetMapping("{id}/turmas")
-  public List<TurmaJsonResponse> listarTurmasDoAluno(@PathVariable UUID id) {
-    // TODO implementar listagem de turmas do aluno
-    throw new UnsupportedOperationException("implement method listarTurmasDoAluno");
-  }
-
+  @GetMapping("{alunoId}/turma/{turmaId}")
+  public List<AlunoJsonResponse> listarAlunosDaTurma(
+    @PathVariable UUID alunoId,
+    @PathVariable UUID turmaId
+    ) {
+    // TODO implementar listagem de alunos da turma
+    throw new UnsupportedOperationException("implement method listarAlunosDaTurma");
+  }  
 }

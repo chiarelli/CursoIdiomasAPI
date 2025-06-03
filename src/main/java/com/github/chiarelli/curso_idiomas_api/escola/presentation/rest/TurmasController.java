@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarTurmasDoAlunoQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarTurmasQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
@@ -90,13 +91,23 @@ public class TurmasController {
     throw new UnsupportedOperationException("implement method excluirTurma");
   }
 
-  @GetMapping("{turmaId}/aluno/{alunoId}")
+  @GetMapping("aluno/{alunoId}")
   public List<TurmaJsonResponse> listarTurmasDoAluno(
-    @PathVariable UUID turmaId, 
     @PathVariable UUID alunoId
   ) {
-    // TODO implementar listagem de turmas do aluno
-    throw new UnsupportedOperationException("implement method listarTurmasDoAluno");
+    
+    var turmas = mediator.dispatch(new ListarTurmasDoAlunoQuery(alunoId));
+
+    return turmas.stream()
+      .map(turma -> new TurmaJsonResponse(
+        turma.getTurmaId(),
+        turma.getNumeroTurma(), 
+        turma.getAnoLetivo(), 
+        turma.getAlunos().stream()
+          .map(aluno -> aluno.getAlunoId())
+          .collect(Collectors.toSet())
+      )
+    ).collect(Collectors.toList());  
   }
 
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/v1/alunos")
 public class AlunosController {
 
-  @Autowired Mediator mediator;
+  private final Mediator mediator;
+
+  public AlunosController(Mediator mediator) {
+    this.mediator = mediator;
+  }
 
   @PostMapping
   public ResponseEntity<AlunoJsonResponse> cadastrarAluno(@RequestBody CriarAlunoJsonRequest request) {

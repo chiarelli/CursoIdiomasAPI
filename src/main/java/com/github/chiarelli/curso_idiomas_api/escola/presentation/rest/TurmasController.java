@@ -3,7 +3,6 @@ package com.github.chiarelli.curso_idiomas_api.escola.presentation.rest;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +24,11 @@ import io.jkratz.mediator.core.Mediator;
 @RequestMapping("api/v1/turmas")
 public class TurmasController {
 
-  @Autowired Mediator mediator;
+  private final Mediator mediator;
+
+  public TurmasController(Mediator mediator) {
+    this.mediator = mediator;
+  }
 
   @PostMapping
   public TurmaJsonResponse cadastrarTurma(@RequestBody NovaTurmaJsonRequest request) {

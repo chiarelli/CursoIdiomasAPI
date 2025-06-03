@@ -16,8 +16,10 @@ import org.springframework.transaction.TransactionSystemException;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarTurmaUseCase;
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.MatricularAlunoEmTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
@@ -25,6 +27,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoPersistence;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 @SpringBootTest
 public class EntitiesUnitTestes {
@@ -316,6 +319,97 @@ public class EntitiesUnitTestes {
     );
 
     
+  }
+
+  @Autowired MatricularAlunoEmTurmaUseCase matricularAluno;
+  
+  @Test
+  void matricularAlunoEmTurma() {
+    // Prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+
+    // Cadastrar primeira turma
+    var turma = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        125,
+        2025
+    ));
+
+    // Cadastrar aluno
+    var aluno =cadastrarAluno.handle(
+      new RegistrarNovoAlunoCommand(
+        "Aluno 1",
+        "736.260.510-21",
+        "gG0wI@example.com",
+        Set.of(turma.getTurmaId())
+      )
+    );
+
+    // Cadastrar segunda turma
+    var turma2 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        500,
+        2026
+    ));
+
+    // Matricular aluno
+    matricularAluno.handle(
+      new MatricularAlunoTurmaCommand(
+        turma2.getTurmaId(), 
+        aluno.getAlunoId()
+      )
+    );
+
+    // Matricular aluno em turma já matriculado
+    var errorMsg1 = assertThrows(DomainException.class, () -> {
+      matricularAluno.handle(
+        new MatricularAlunoTurmaCommand(
+          turma.getTurmaId(),
+          aluno.getAlunoId()
+        )
+      );
+    }).getUserMessages();
+
+    assertTrue(
+      errorMsg1.get("error").equals("Aluno %s ja matriculado na turma %s".formatted(aluno.getAlunoId(), turma.getTurmaId())), 
+      "deveria apresentar mensagem \"Aluno %s ja matriculado na turma %s\""
+    );
+
+    // Matricular aluno turma inexistente
+    var turmaIdInvalido = UUID.randomUUID();
+
+    var errorMsg = assertThrows(NotFoundException.class, () -> {
+      matricularAluno.handle(
+        new MatricularAlunoTurmaCommand(
+          turmaIdInvalido,
+          aluno.getAlunoId()
+        )
+      );
+    }).getMessage();
+
+    assertTrue(
+      errorMsg.equals("Turma %s nao encontrada".formatted(turmaIdInvalido)), 
+      "deveria apresentar mensagem \"Turma %s nao encontrada\""
+    );
+
+    // Matricular aluno aluno inexistente
+    var alunoIdInvalido = UUID.randomUUID();
+
+    var errorMsg2 = assertThrows(NotFoundException.class, () -> {
+      matricularAluno.handle(
+        new MatricularAlunoTurmaCommand(
+          turma2.getTurmaId(),
+          alunoIdInvalido
+        )
+      );
+    }).getMessage();
+
+    assertTrue(
+      errorMsg2.equals("Aluno %s nao encontrado".formatted(alunoIdInvalido)), 
+      "deveria apresentar mensagem \"Aluno %s nao encontrado\""
+    );
+
   }
 
 }

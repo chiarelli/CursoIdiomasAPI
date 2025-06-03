@@ -9,12 +9,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
+
+import io.jkratz.mediator.core.Mediator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("api/v1/secretaria")
 public class SecretariaController {
+
+  private final Mediator mediator;
+
+  public SecretariaController(Mediator mediator) {
+    this.mediator = mediator;
+  }
 
   @PostMapping("matricular/turma/{turmaId}/aluno/{alunoId}")
   @Operation(
@@ -29,8 +38,10 @@ public class SecretariaController {
       @PathVariable UUID turmaId, 
       @PathVariable UUID alunoId
       ) {
-        // TODO implementar matricula de aluno na turma
-        throw new UnsupportedOperationException("implement method matricularAluno");
+        var cmd = new MatricularAlunoTurmaCommand(turmaId, alunoId);
+        mediator.dispatch(cmd);
+
+        return ResponseEntity.noContent().build();
       }
       
       @DeleteMapping("desmatricular/turma/{turmaId}/aluno/{alunoId}")

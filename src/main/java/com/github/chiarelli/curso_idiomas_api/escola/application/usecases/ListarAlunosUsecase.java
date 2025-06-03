@@ -2,7 +2,6 @@ package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +18,11 @@ import io.jkratz.mediator.core.RequestHandler;
 @Component
 public class ListarAlunosUsecase implements RequestHandler<PageListarAlunosQuery, Page<AlunoInterface>> {
 
-  @Autowired AlunoRepository repository;
+  private final AlunoRepository repository;
+
+  public ListarAlunosUsecase(AlunoRepository alunoRepository) {
+    this.repository = alunoRepository;
+  }
 
   @Override
   public Page<AlunoInterface> handle(PageListarAlunosQuery query) {

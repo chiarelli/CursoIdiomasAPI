@@ -2,6 +2,7 @@ package com.github.chiarelli.curso_idiomas_api.escola.presentation.rest;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarTurmasQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
@@ -20,6 +22,8 @@ import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJson
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonResponse;
 
 import io.jkratz.mediator.core.Mediator;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping("api/v1/turmas")
@@ -39,9 +43,30 @@ public class TurmasController {
   }
 
   @GetMapping
-  public PageCollectionJsonResponse<TurmaJsonResponse> listarTurmas() {
-    // TODO implementar listagem de turmas
-    throw new UnsupportedOperationException("implement method listarTurmas");
+  public PageCollectionJsonResponse<TurmaJsonResponse> listarTurmas(
+    @RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
+    @RequestParam(name = "size", defaultValue = "10") @Min(1) @Max(100) Integer size
+  ) {
+    var query = new PageListarTurmasQuery(page, size);
+    var result = mediator.dispatch(query);
+
+    return new PageCollectionJsonResponse<>(
+      result.getNumberOfElements(),
+      page,
+      result.getSize(),
+      result.getTotalElements(),
+      result.getTotalPages(),
+      result.getContent().stream()
+          .map(turma -> new TurmaJsonResponse(
+              turma.getTurmaId(),
+              turma.getNumeroTurma(), 
+              turma.getAnoLetivo(), 
+              turma.getAlunos().stream()
+                  .map(aluno -> aluno.getAlunoId())
+                  .collect(Collectors.toSet())
+          )
+      ).collect(Collectors.toList())
+    );
   }
 
   @GetMapping("{id}")

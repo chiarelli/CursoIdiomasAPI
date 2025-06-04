@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarT
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarTurmasQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarTurmaPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonRequest;
@@ -95,9 +97,11 @@ public class TurmasController {
   }
 
   @DeleteMapping("{id}")
-  public void excluirTurma(@PathVariable UUID id) {
-    // TODO implementar exclusao de turma
-    throw new UnsupportedOperationException("implement method excluirTurma");
+  public ResponseEntity<Void> excluirTurma(@PathVariable UUID id) {
+    var cmd = new ExcluirTurmaCommand(id);
+    mediator.dispatch(cmd);
+
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping("aluno/{alunoId}")

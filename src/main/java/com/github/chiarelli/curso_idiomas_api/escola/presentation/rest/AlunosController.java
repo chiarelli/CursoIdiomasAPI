@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarAlunosDaTurmaQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarAlunosQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
@@ -126,12 +127,24 @@ public class AlunosController {
     throw new UnsupportedOperationException("implement method buscarAlunoPorId");
   }
 
-  @GetMapping("{alunoId}/turma/{turmaId}")
+  @GetMapping("turma/{turmaId}")
   public List<AlunoJsonResponse> listarAlunosDaTurma(
-    @PathVariable UUID alunoId,
     @PathVariable UUID turmaId
     ) {
-    // TODO implementar listagem de alunos da turma
-    throw new UnsupportedOperationException("implement method listarAlunosDaTurma");
+    var query = new ListarAlunosDaTurmaQuery(turmaId);
+    var alunos = mediator.dispatch(query);
+
+    return alunos.stream()
+      .map(aluno -> new AlunoJsonResponse(
+        aluno.getAlunoId(),
+        aluno.getNome(),
+        aluno.getEmail(),
+        aluno.getCpf(),
+        aluno.getTurmas().stream()
+          .map(TurmaInterface::getTurmaId)
+          .collect(Collectors.toSet())
+      ))
+      .collect(Collectors.toList());
+    
   }  
 }

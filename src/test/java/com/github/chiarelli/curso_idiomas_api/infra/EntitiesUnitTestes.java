@@ -16,9 +16,11 @@ import org.springframework.transaction.TransactionSystemException;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarTurmaUseCase;
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.ExcluirTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.MatricularAlunoEmTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
@@ -412,4 +414,60 @@ public class EntitiesUnitTestes {
 
   }
 
+  @Autowired ExcluirTurmaUseCase excluirTurma;
+
+  @Test
+  void excluirTurma() {
+    // Prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+
+    // Cadastrar turma
+    var turma1 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        125,
+        2025
+    ));
+
+    // Cadastrar aluno
+    cadastrarAluno.handle(
+      new RegistrarNovoAlunoCommand(
+        "Aluno 1",
+        "355.880.820-79",
+        "gG0wI@example.com",
+        Set.of(turma1.getTurmaId())
+      )
+    );
+
+    // Excluir turma com alunos matriculados
+    var errorMsg = assertThrows(DomainException.class, () -> {
+      excluirTurma.handle(
+        new ExcluirTurmaCommand(
+          turma1.getTurmaId()
+        )
+      );
+    }).getUserMessages();
+
+    System.out.println(errorMsg);
+    assertTrue(
+      errorMsg.get("error").equals("Turma "+ turma1.getTurmaId() +" possui alunos matriculados"), 
+      "deveria apresentar mensagem \"Turma "+ turma1.getTurmaId() +" possui alunos matriculados\""
+    );
+
+    // Excluir turma sem alunos matriculados
+    var turma2 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        630,
+        2025
+    ));
+
+    assertDoesNotThrow(() -> {
+      excluirTurma.handle(
+        new ExcluirTurmaCommand(
+          turma2.getTurmaId()
+        )
+      );
+    });
+    
+  }
 }

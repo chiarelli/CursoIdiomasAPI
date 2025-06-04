@@ -10,6 +10,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInter
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoMatriculadoEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoRemovidoTurmaEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaExcluidaEvent;
 
 import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Max;
@@ -60,6 +61,13 @@ public class Turma implements TurmaInterface {
   public void removeAluno(Aluno aluno) {
     alunos.remove(aluno);
   }
+
+  private void clear() {
+    this.alunos.clear();
+    this.turmaId = null;
+    this.anoLetivo = null;
+    this.numeroTurma = null;
+  }
   
   // ##### Actions #####
 
@@ -75,6 +83,14 @@ public class Turma implements TurmaInterface {
     aluno.removeTurma(this);
 
     mediator.emit(new AlunoRemovidoTurmaEvent(aluno.getAlunoId(), this.getTurmaId()));
+  }
+
+  public void excluirTurma(Mediator mediator) {
+    if(!alunos.isEmpty()) {
+      throw new DomainException("Turma %s possui alunos matriculados".formatted(this.getTurmaId()));
+    }
+    clear(); // limpa a turma
+    mediator.emit(new TurmaExcluidaEvent(this.getTurmaId()));
   }
 
   // ##### Getters #####

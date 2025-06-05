@@ -26,9 +26,9 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNo
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoPersistence;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoPersistence;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 @SpringBootTest

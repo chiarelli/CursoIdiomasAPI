@@ -1,4 +1,4 @@
-package com.github.chiarelli.curso_idiomas_api.escola.infra.persistence;
+package com.github.chiarelli.curso_idiomas_api.escola.infra.jpa;
 
 import java.util.UUID;
 

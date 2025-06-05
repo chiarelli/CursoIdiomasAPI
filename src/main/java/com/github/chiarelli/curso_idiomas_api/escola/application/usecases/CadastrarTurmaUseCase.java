@@ -10,8 +10,8 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaPersistence;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaPersistence;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 
 import io.jkratz.mediator.core.RequestHandler;
 import jakarta.transaction.Transactional;

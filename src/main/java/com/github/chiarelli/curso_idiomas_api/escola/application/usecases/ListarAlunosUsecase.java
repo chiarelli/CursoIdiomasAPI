@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarAlunosQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoPersistence;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoPersistence;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 
 import io.jkratz.mediator.core.RequestHandler;
 

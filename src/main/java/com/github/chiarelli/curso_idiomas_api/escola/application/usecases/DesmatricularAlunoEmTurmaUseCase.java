@@ -8,10 +8,10 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.Cadast
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.DesmatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoRemovidoTurmaEvent;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 import io.jkratz.mediator.core.EventHandler;

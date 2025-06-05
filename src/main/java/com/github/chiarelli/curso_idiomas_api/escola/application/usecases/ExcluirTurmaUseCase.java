@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase.AlunoCadastradoHandler;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaExcluidaEvent;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 import io.jkratz.mediator.core.EventHandler;

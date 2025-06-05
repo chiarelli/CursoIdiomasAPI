@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarTurmasQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 
 import io.jkratz.mediator.core.RequestHandler;
 

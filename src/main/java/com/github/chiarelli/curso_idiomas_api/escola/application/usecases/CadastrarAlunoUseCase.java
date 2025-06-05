@@ -11,11 +11,11 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoCadastradoEvent;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoPersistence;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.AlunoRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.persistence.TurmaRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoPersistence;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;

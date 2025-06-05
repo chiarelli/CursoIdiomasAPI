@@ -11,10 +11,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoCadastradoEvent;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoExcluidoEvent;
 
-import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -71,7 +68,7 @@ public class Aluno implements AlunoInterface {
     turmas.remove(turma);
   }
 
-  public void adicionarTurma(Set<Turma> turmas) {
+  public void adicionarTurmas(Set<Turma> turmas) {
     if (turmas == null || turmas.isEmpty()) {
       throw new DomainException("Aluno deve ser matriculado em pelo menos uma turma");
     }
@@ -82,7 +79,7 @@ public class Aluno implements AlunoInterface {
     }
   }
 
-  private void clear() {
+  void clear() {
     this.turmas.clear();
     this.alunoId = null;
     this.nome = null;
@@ -94,24 +91,6 @@ public class Aluno implements AlunoInterface {
     return turmas.size() == 0;
   }
 
-  // ##### Actions #####
-
-  public void cadastrarAluno(Mediator mediator) {
-    mediator.emit(new AlunoCadastradoEvent(this.getAlunoId()));
-  }
-
-  public void atualizarDadosAluno(Mediator mediator) {
-    throw new IllegalArgumentException("implement method atualizarDadosAluno");
-  }
-  
-  public void excluirAluno(Mediator mediator) {
-    if(!canBeDeleted())
-      throw new DomainException("Aluno %s nao pode ser excluído, pois ainda esta matriculado em pelo menos uma turma".formatted(alunoId));
-    
-    clear();
-    mediator.emit(new AlunoExcluidoEvent(alunoId));
-  }
-  
   // ##### Getters #####
 
   @Override

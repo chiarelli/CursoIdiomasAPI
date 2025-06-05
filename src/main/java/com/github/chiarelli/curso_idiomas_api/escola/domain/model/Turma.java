@@ -9,11 +9,7 @@ import java.util.UUID;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoMatriculadoEvent;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoDesmatriculadoTurmaEvent;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaExcluidaEvent;
 
-import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -63,43 +59,13 @@ public class Turma implements TurmaInterface {
     alunos.remove(aluno);
   }
 
-  private void clear() {
+  void clear() {
     this.alunos.clear();
     this.turmaId = null;
     this.anoLetivo = null;
     this.numeroTurma = null;
   }
   
-  // ##### Actions #####
-
-  public void matricularAluno(Mediator mediator, Aluno aluno) {
-    if(alunos.contains(aluno)) {
-      throw new DomainException("Aluno %s ja esta matriculado nesta turma".formatted(aluno.getAlunoId()));
-    }
-    addAluno(aluno);
-    this.addAluno(aluno);
-    
-    mediator.emit(new AlunoMatriculadoEvent(aluno.getAlunoId(), this.getTurmaId()));
-  }
-
-  public void desmatricularAluno(Mediator mediator, Aluno aluno) {
-    if(!alunos.contains(aluno)) {
-      throw new DomainException("Aluno %s nao esta matriculado nesta turma".formatted(aluno.getAlunoId()));
-    }
-    removeAluno(aluno);
-    aluno.removeTurma(this);
-
-    mediator.emit(new AlunoDesmatriculadoTurmaEvent(aluno.getAlunoId(), this.getTurmaId()));
-  }
-
-  public void excluirTurma(Mediator mediator) {
-    if(!alunos.isEmpty()) {
-      throw new DomainException("Turma %s possui alunos matriculados".formatted(this.getTurmaId()));
-    }
-    clear(); // limpa a turma
-    mediator.emit(new TurmaExcluidaEvent(this.getTurmaId()));
-  }
-
   // ##### Getters #####
 
   @Override

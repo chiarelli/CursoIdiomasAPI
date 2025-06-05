@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
@@ -22,7 +23,6 @@ import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;
 import io.jkratz.mediator.core.RequestHandler;
-import jakarta.transaction.Transactional;
 
 @Component
 public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoCommand, AlunoInterface> {
@@ -66,11 +66,11 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
       turmasPers
     );
 
-    var aluno2 = AlunoMapper.toDomain(alunoPers);
-    alunoActions.cadastrarAluno(aluno2); // Emitir evento de domínio
-
     // Salva o aluno
     alunoPers = alRepo.save(alunoPers);
+    
+    var aluno2 = AlunoMapper.toDomain(alunoPers);
+    alunoActions.cadastrarAluno(aluno2); // Emitir evento de domínio
     
     return aluno2;
   }

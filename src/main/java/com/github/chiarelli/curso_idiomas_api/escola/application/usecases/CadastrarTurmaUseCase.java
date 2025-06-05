@@ -2,41 +2,71 @@ package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaCadastradaEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.model.TurmaActions;
+import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaPersistence;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 
+import io.jkratz.mediator.core.EventHandler;
+import io.jkratz.mediator.core.Mediator;
 import io.jkratz.mediator.core.RequestHandler;
-import jakarta.transaction.Transactional;
 
 @Component
 public class CadastrarTurmaUseCase implements RequestHandler<CadastrarNovaTurmaCommand, TurmaInterface> {
 
-  @Autowired InstanceValidator validator;
-  @Autowired TurmaRepository repository;
+  private final TurmaRepository repository;
+  private final TurmaActions turmaActions;
+
+  public CadastrarTurmaUseCase(
+    TurmaRepository repository,
+    InstanceValidator validator,
+    Mediator mediator 
+  ) {
+    this.repository = repository;
+
+    this.turmaActions = new TurmaActions(mediator, validator);
+  }
 
   @Override
   @Transactional
   public TurmaInterface handle(CadastrarNovaTurmaCommand cmd) {
     var domain = CadastrarNovaTurmaCommand.toDomain(UUID.randomUUID(), cmd);
-    validator.validate(domain);
 
     if (repository.countByTurmaIdAndAnoLetivo(domain.getNumeroTurma(), domain.getAnoLetivo()) > 0) {
       throw new DomainException("Turma com id " + domain.getNumeroTurma() + " já cadastrada");
     }
 
     var persistence = new TurmaPersistence(domain.getTurmaId(), domain.getNumeroTurma(), domain.getAnoLetivo());
-
+    // persiste a turma
     persistence = repository.save(persistence);
 
-    return new Turma(persistence.getId(), persistence.getTurmaId(), persistence.getAnoLetivo());
+    var turmaCreated = TurmaMapper.toDomain(persistence);
+    // Emitir evento de domínio
+    turmaActions.criarTurma(turmaCreated);
+
+    return turmaCreated;
+  }
+
+  @Component
+  public static class TurmaCadastradaHandler implements EventHandler<TurmaCadastradaEvent> {
+
+    private static final Logger logger = LoggerFactory.getLogger(CadastrarTurmaUseCase.class);
+
+    @Override
+    public void handle(TurmaCadastradaEvent event) {
+      logger.info("Turma cadastrada: " + event.getTurmaId());
+    }
+    
   }
 
 }

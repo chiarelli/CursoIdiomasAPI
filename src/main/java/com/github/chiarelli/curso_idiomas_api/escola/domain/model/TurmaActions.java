@@ -4,6 +4,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoDesmatriculadoTurmaEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoMatriculadoEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaCadastradaEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaExcluidaEvent;
 
 import io.jkratz.mediator.core.Mediator;
@@ -12,6 +13,11 @@ public class TurmaActions extends AbstractAggregateActions {
 
   public TurmaActions(Mediator mediator, InstanceValidator validator) {
     super(mediator, validator);
+  }
+
+  public void criarTurma(Turma turma) {
+    validator.validate(turma);
+    mediator.emit(new TurmaCadastradaEvent(turma.getTurmaId()));
   }
 
   public void matricularAluno(Turma turma, Aluno aluno) {
@@ -45,7 +51,7 @@ public class TurmaActions extends AbstractAggregateActions {
       throw new DomainException("Turma %s possui alunos matriculados".formatted(turma.getTurmaId()));
     }
     validator.validate(turma); // valida a turma
-    
+
     turma.clear(); // limpa a turma
     mediator.emit(new TurmaExcluidaEvent(turma.getTurmaId()));
   }

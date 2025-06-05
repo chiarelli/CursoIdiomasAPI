@@ -3,6 +3,7 @@ package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
@@ -19,7 +20,6 @@ import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.Not
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;
 import io.jkratz.mediator.core.RequestHandler;
-import jakarta.transaction.Transactional;
 
 @Component
 public class ExcluirAlunoUseCase implements RequestHandler<ExcluirAlunoCommand, Void> {

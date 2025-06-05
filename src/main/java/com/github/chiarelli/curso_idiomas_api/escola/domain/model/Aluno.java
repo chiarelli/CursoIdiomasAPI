@@ -2,6 +2,7 @@ package com.github.chiarelli.curso_idiomas_api.escola.domain.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoCadastradoEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoExcluidoEvent;
 
 import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Email;
@@ -80,6 +82,18 @@ public class Aluno implements AlunoInterface {
     }
   }
 
+  private void clear() {
+    this.turmas.clear();
+    this.alunoId = null;
+    this.nome = null;
+    this.cpf = null;
+    this.email = null;
+  }
+
+  public boolean canBeDeleted() {
+    return turmas.size() == 0;
+  }
+
   // ##### Actions #####
 
   public void cadastrarAluno(Mediator mediator) {
@@ -90,8 +104,12 @@ public class Aluno implements AlunoInterface {
     throw new IllegalArgumentException("implement method atualizarDadosAluno");
   }
   
-  public void excluirAlunoAluno(Mediator mediator) {
-    throw new IllegalArgumentException("implement method excluirAluno");
+  public void excluirAluno(Mediator mediator) {
+    if(!canBeDeleted())
+      throw new DomainException("Aluno %s nao pode ser excluído, pois ainda esta matriculado em pelo menos uma turma".formatted(alunoId));
+    
+    clear();
+    mediator.emit(new AlunoExcluidoEvent(alunoId));
   }
   
   // ##### Getters #####
@@ -119,6 +137,35 @@ public class Aluno implements AlunoInterface {
   @Override
   public Set<TurmaInterface> getTurmas() {
     return Collections.unmodifiableSet(turmas);
+  }
+
+  // ##### Other #####
+
+  @Override
+  public String toString() {
+    return "Aluno [alunoId=" + alunoId + ", nome=" + nome + ", cpf=" + cpf + ", email=" + email + "]";
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Aluno other = (Aluno) obj;
+    if (alunoId == null) {
+      if (other.alunoId != null)
+        return false;
+    } else if (!alunoId.equals(other.alunoId))
+      return false;
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(alunoId);
   }
 
 }

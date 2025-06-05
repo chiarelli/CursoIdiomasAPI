@@ -2,6 +2,7 @@ package com.github.chiarelli.curso_idiomas_api.escola.domain.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoMatriculadoEvent;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoRemovidoTurmaEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoDesmatriculadoTurmaEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaExcluidaEvent;
 
 import io.jkratz.mediator.core.Mediator;
@@ -72,6 +73,9 @@ public class Turma implements TurmaInterface {
   // ##### Actions #####
 
   public void matricularAluno(Mediator mediator, Aluno aluno) {
+    if(alunos.contains(aluno)) {
+      throw new DomainException("Aluno %s ja esta matriculado nesta turma".formatted(aluno.getAlunoId()));
+    }
     addAluno(aluno);
     this.addAluno(aluno);
     
@@ -79,10 +83,17 @@ public class Turma implements TurmaInterface {
   }
 
   public void desmatricularAluno(Mediator mediator, Aluno aluno) {
+    System.out.println("-------------------------------");
+    System.out.println(alunos);
+    System.out.println("-------------------------------");
+
+    if(!alunos.contains(aluno)) {
+      throw new DomainException("Aluno %s nao esta matriculado nesta turma".formatted(aluno.getAlunoId()));
+    }
     removeAluno(aluno);
     aluno.removeTurma(this);
 
-    mediator.emit(new AlunoRemovidoTurmaEvent(aluno.getAlunoId(), this.getTurmaId()));
+    mediator.emit(new AlunoDesmatriculadoTurmaEvent(aluno.getAlunoId(), this.getTurmaId()));
   }
 
   public void excluirTurma(Mediator mediator) {
@@ -113,6 +124,35 @@ public class Turma implements TurmaInterface {
   @Override
   public Set<AlunoInterface> getAlunos() {
     return Collections.unmodifiableSet(alunos);
+  }
+
+  // ##### Other #####
+
+  @Override
+  public String toString() {
+    return "Turma [turmaId=" + turmaId + ", numeroTurma=" + numeroTurma + ", anoLetivo=" + anoLetivo + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(turmaId);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Turma other = (Turma) obj;
+    if (turmaId == null) {
+      if (other.turmaId != null)
+        return false;
+    } else if (!turmaId.equals(other.turmaId))
+      return false;
+    return true;
   }
 
 }

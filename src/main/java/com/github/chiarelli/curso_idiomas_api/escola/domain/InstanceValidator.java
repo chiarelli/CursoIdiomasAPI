@@ -1,10 +1,9 @@
 package com.github.chiarelli.curso_idiomas_api.escola.domain;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import jakarta.validation.ConstraintViolation;
@@ -13,7 +12,11 @@ import jakarta.validation.Validator;
 @Component
 public class InstanceValidator {
 
-  @Autowired Validator validator;
+  private final Validator validator;
+
+  public InstanceValidator(Validator validator) {
+    this.validator = validator;
+  }
 
   /**
    * Valida a instância recebida contra as constraints definidas em suas anotações.
@@ -31,7 +34,7 @@ public class InstanceValidator {
       return; // Nenhuma violação encontrada
     }
 
-    Map<String, Object> userMessages = new LinkedHashMap<>();
+    Map<String, Object> userMessages = new HashMap<>();
     StringBuilder devMessage = new StringBuilder();
 
     for (ConstraintViolation<Object> violation : violations) {

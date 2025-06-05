@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoExcluidoEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.model.AlunoActions;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.model.TurmaActions;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
@@ -23,16 +26,20 @@ public class ExcluirAlunoUseCase implements RequestHandler<ExcluirAlunoCommand, 
 
   private final AlunoRepository alunoRepository;
   private final TurmaRepository turmaRepository;
-  private final Mediator mediator;
+  private final AlunoActions alunoActions;
+  private final TurmaActions turmaActions;
 
   public ExcluirAlunoUseCase(
     AlunoRepository alunoRepository,
     TurmaRepository turmaRepository,
-    Mediator mediator
+    Mediator mediator,
+    InstanceValidator validator
   ) {
     this.alunoRepository = alunoRepository;
     this.turmaRepository = turmaRepository;
-    this.mediator = mediator;
+
+    this.alunoActions = new AlunoActions(mediator, validator);
+    this.turmaActions = new TurmaActions(mediator, validator);
   }
 
   @Override
@@ -49,11 +56,12 @@ public class ExcluirAlunoUseCase implements RequestHandler<ExcluirAlunoCommand, 
     alunoPer.getTurmas().forEach(t -> {
       t.getAlunos().remove(alunoPer);
       turmaRepository.save(t); // remove o aluno da turma no banco de dados
-      TurmaMapper.toDomain(t).desmatricularAluno(mediator, aluno); // emite o evento de domínio
+      var turma = TurmaMapper.toDomain(t);
+      turmaActions.desmatricularAluno(turma, aluno); // emite o evento de domínio
     });
 
     alunoRepository.delete(alunoPer); // exclui o aluno no banco de dados
-    aluno.excluirAluno(mediator); // emite o evento de domínio
+    alunoActions.excluirAluno(aluno); // emite o evento de domínio
     
     return null;
   }

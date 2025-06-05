@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoMatriculadoEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.model.TurmaActions;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
@@ -23,16 +25,18 @@ public class MatricularAlunoEmTurmaUseCase implements RequestHandler<MatricularA
 
   private final TurmaRepository turmaRepository;
   private final AlunoRepository alunoRepository;
-  private final Mediator mediator;
+  private final TurmaActions actions;
 
   public MatricularAlunoEmTurmaUseCase(
     TurmaRepository turmaRepository,
     AlunoRepository alunoRepository,
-    Mediator mediator
+    Mediator mediator,
+    InstanceValidator validator
   ) {
     this.turmaRepository = turmaRepository;
     this.alunoRepository = alunoRepository;
-    this.mediator = mediator;
+
+    this.actions = new TurmaActions(mediator, validator);
   }
 
   @Override
@@ -57,7 +61,7 @@ public class MatricularAlunoEmTurmaUseCase implements RequestHandler<MatricularA
     alunoP.getTurmas().add(turmaP);
     alunoRepository.save(alunoP);
     
-    turma.matricularAluno(mediator, aluno); // emite o evento de domínio
+    actions.matricularAluno(turma, aluno); // emite o evento de domínio
 
     return null;
   }

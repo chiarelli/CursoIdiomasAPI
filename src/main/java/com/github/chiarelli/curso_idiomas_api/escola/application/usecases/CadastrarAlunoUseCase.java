@@ -3,14 +3,16 @@ package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoCadastradoEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.model.AlunoActions;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.model.TurmaActions;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoPersistence;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
@@ -25,10 +27,10 @@ import jakarta.transaction.Transactional;
 @Component
 public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoCommand, AlunoInterface> {
 
-  private final InstanceValidator validator;
   private final AlunoRepository alRepo;
   private final TurmaRepository trRepo;
-  private final Mediator mediator;
+  private final AlunoActions alunoActions;
+  private final TurmaActions turmaActions;
 
   public CadastrarAlunoUseCase(
     InstanceValidator validator,
@@ -36,10 +38,11 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
     TurmaRepository trRepo,
     Mediator mediator
   ) {
-    this.validator = validator;
     this.alRepo = alRepo;
     this.trRepo = trRepo;
-    this.mediator = mediator;
+
+    this.alunoActions = new AlunoActions(mediator, validator);
+    this.turmaActions = new TurmaActions(mediator, validator);
   }
 
   @Override
@@ -48,12 +51,11 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
 
     var turmasPers = trRepo.findAllById(cmd.getTurmaMatricularIds()).stream().collect(Collectors.toSet());
     var turmas = turmasPers.stream().map(TurmaMapper::toDomain).collect(Collectors.toSet());
-
     var aluno = RegistrarNovoAlunoCommand.toDomain(UUID.randomUUID(), cmd);
-    aluno.adicionarTurma(turmas);
 
-    validator.validate(aluno); // Valida o aluno após as regras de negócio
-    turmas.forEach(validator::validate); // Valida as turmas após as regras de negócio
+    turmas.forEach(turma -> turmaActions.matricularAluno(turma, aluno));
+
+    aluno.adicionarTurmas(turmas);
 
     // Mapeia o aluno domain para o persistence
     var alunoPers = new AlunoPersistence(
@@ -64,13 +66,13 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
       turmasPers
     );
 
+    var aluno2 = AlunoMapper.toDomain(alunoPers);
+    alunoActions.cadastrarAluno(aluno2); // Emitir evento de domínio
+
     // Salva o aluno
     alunoPers = alRepo.save(alunoPers);
     
-    aluno = AlunoMapper.toDomain(alunoPers);
-    aluno.cadastrarAluno(mediator); // Emitir evento de domínio
-
-    return aluno;
+    return aluno2;
   }
 
   @Component

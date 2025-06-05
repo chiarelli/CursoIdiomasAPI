@@ -202,7 +202,7 @@ public class EntitiesUnitTestes {
       cadastrarAluno.handle(
         new RegistrarNovoAlunoCommand(
           "Aluno 6",
-          "695.231.070-38",
+          "467.739.240-49",
           "099ti@example.com",
           Set.of(turma.getTurmaId())
         )

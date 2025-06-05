@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarAlunosDaTurmaQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarAlunosQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonRequest;
@@ -26,8 +29,6 @@ import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageColle
 import io.jkratz.mediator.core.Mediator;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -122,9 +123,11 @@ public class AlunosController {
   }
     
   @DeleteMapping("{id}")
-  public void excluirAluno(@PathVariable UUID id) {
-    // TODO implementar busca de aluno por id
-    throw new UnsupportedOperationException("implement method buscarAlunoPorId");
+  public ResponseEntity<Void> excluirAluno(@PathVariable UUID id) {
+    var cmd = new ExcluirAlunoCommand(id);
+    mediator.dispatch(cmd);
+
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping("turma/{turmaId}")

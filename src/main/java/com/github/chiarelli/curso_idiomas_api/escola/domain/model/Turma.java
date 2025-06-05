@@ -83,10 +83,6 @@ public class Turma implements TurmaInterface {
   }
 
   public void desmatricularAluno(Mediator mediator, Aluno aluno) {
-    System.out.println("-------------------------------");
-    System.out.println(alunos);
-    System.out.println("-------------------------------");
-
     if(!alunos.contains(aluno)) {
       throw new DomainException("Aluno %s nao esta matriculado nesta turma".formatted(aluno.getAlunoId()));
     }

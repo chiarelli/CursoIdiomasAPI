@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase.AlunoCadastradoHandler;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaExcluidaEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
@@ -46,7 +45,7 @@ public class ExcluirTurmaUseCase implements RequestHandler<ExcluirTurmaCommand, 
   @Component
   public static class ExcluirTurmaHandler implements EventHandler<TurmaExcluidaEvent> {
     
-    private static final Logger logger = LoggerFactory.getLogger(AlunoCadastradoHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExcluirTurmaUseCase.class);
 
     @Override
     public void handle(TurmaExcluidaEvent event) {

@@ -76,7 +76,7 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
   @Component
   public static class AlunoCadastradoHandler implements EventHandler<AlunoCadastradoEvent> {
     
-    private static final Logger logger = LoggerFactory.getLogger(AlunoCadastradoHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(CadastrarAlunoUseCase.class);
 
     @Override
     public void handle(AlunoCadastradoEvent event) {

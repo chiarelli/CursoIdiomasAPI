@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase.AlunoCadastradoHandler;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoMatriculadoEvent;
@@ -66,7 +65,7 @@ public class MatricularAlunoEmTurmaUseCase implements RequestHandler<MatricularA
   @Component
   public static class MatricularAlunoHandler implements EventHandler<AlunoMatriculadoEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AlunoCadastradoHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(MatricularAlunoEmTurmaUseCase.class);
 
     @Override
     public void handle(AlunoMatriculadoEvent evt) {

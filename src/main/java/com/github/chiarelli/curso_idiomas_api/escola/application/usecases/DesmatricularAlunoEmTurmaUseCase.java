@@ -4,10 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase.AlunoCadastradoHandler;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.DesmatricularAlunoTurmaCommand;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoRemovidoTurmaEvent;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoDesmatriculadoTurmaEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
@@ -61,12 +60,12 @@ public class DesmatricularAlunoEmTurmaUseCase implements RequestHandler<Desmatri
   }
 
   @Component
-  public static class AlunoRemovidoTurmoHandler implements EventHandler<AlunoRemovidoTurmaEvent> {
+  public static class AlunoRemovidoTurmoHandler implements EventHandler<AlunoDesmatriculadoTurmaEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AlunoCadastradoHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DesmatricularAlunoEmTurmaUseCase.class);
 
     @Override
-    public void handle(AlunoRemovidoTurmaEvent evt) {
+    public void handle(AlunoDesmatriculadoTurmaEvent evt) {
       logger.info("Aluno %s removido da turma %s ".formatted(evt.getAlunoId(), evt.getTurmaId()));
     }
   

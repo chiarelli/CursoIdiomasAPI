@@ -4,11 +4,11 @@ import java.util.UUID;
 
 import io.jkratz.mediator.core.Event;
 
-public class AlunoRemovidoTurmaEvent implements Event {
+public class AlunoDesmatriculadoTurmaEvent implements Event {
   private final UUID alunoId;
   private final UUID turmaId;
 
-  public AlunoRemovidoTurmaEvent(UUID alunoId, UUID turmaId) {
+  public AlunoDesmatriculadoTurmaEvent(UUID alunoId, UUID turmaId) {
     this.alunoId = alunoId;
     this.turmaId = turmaId;
   }

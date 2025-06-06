@@ -2,6 +2,7 @@ package com.github.chiarelli.curso_idiomas_api.escola.domain.model;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoAtualizadoEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoCadastradoEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoExcluidoEvent;
 
@@ -20,7 +21,8 @@ public class AlunoActions extends AbstractAggregateActions {
 
   public void atualizarDadosAluno(Aluno aluno) {
     validator.validate(aluno);
-    throw new IllegalArgumentException("implement method atualizarDadosAluno");
+    
+    mediator.emit(new AlunoAtualizadoEvent(aluno));
   }
   
   public void excluirAluno(Aluno aluno) {

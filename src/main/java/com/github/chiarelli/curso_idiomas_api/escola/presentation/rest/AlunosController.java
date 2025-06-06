@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarAlunosDaTurmaQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarAlunosQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
@@ -118,8 +119,25 @@ public class AlunosController {
     @PathVariable UUID id, 
     @RequestBody AlunoJsonRequest request
   ) {
-    // TODO implementar atualizacao de aluno
-    throw new UnsupportedOperationException("implement method atualizarAluno");
+    var cmd = new AtualizarDadosAlunoCommand(
+      id, 
+      request.getNome(), 
+      request.getEmail()
+    );
+    
+    var result = mediator.dispatch(cmd);
+    var turmaIds = result.getTurmas()
+      .stream()
+      .map(t -> t.getTurmaId())
+      .collect(Collectors.toSet());
+    
+    return new AlunoJsonResponse(
+      result.getAlunoId(), 
+      result.getNome(), 
+      result.getEmail(), 
+      result.getCpf(), 
+      turmaIds
+    );
   }
     
   @DeleteMapping("{id}")

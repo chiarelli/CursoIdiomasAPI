@@ -7,15 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.DesmatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoExcluidoEvent;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.AlunoActions;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.model.TurmaActions;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;
@@ -25,39 +23,44 @@ import io.jkratz.mediator.core.RequestHandler;
 public class ExcluirAlunoUseCase implements RequestHandler<ExcluirAlunoCommand, Void> {
 
   private final AlunoRepository alunoRepository;
-  private final TurmaRepository turmaRepository;
+  private final DesmatricularAlunoEmTurmaUseCase desmatricularAluno;
   private final AlunoActions alunoActions;
-  private final TurmaActions turmaActions;
 
   public ExcluirAlunoUseCase(
     AlunoRepository alunoRepository,
-    TurmaRepository turmaRepository,
+    DesmatricularAlunoEmTurmaUseCase desmatricularAluno,
     Mediator mediator,
     InstanceValidator validator
   ) {
     this.alunoRepository = alunoRepository;
-    this.turmaRepository = turmaRepository;
+    this.desmatricularAluno = desmatricularAluno;
 
     this.alunoActions = new AlunoActions(mediator, validator);
-    this.turmaActions = new TurmaActions(mediator, validator);
   }
 
   @Override
   @Transactional
   public Void handle(ExcluirAlunoCommand cmd) {
-    var alunoPer = alunoRepository.findById(cmd.getAlunoId())
-        .orElseThrow(() -> new NotFoundException("Aluno %s nao encontrado".formatted(cmd.getAlunoId())));
+    var result = alunoRepository.findById(cmd.getAlunoId());
+    
+    if(result.isEmpty()) {
+      return null; // não faz nada, pois método é idempotente
+    }
+
+    var alunoPer = result.get();
     var aluno = AlunoMapper.toDomain(alunoPer);
 
     if(!aluno.canBeDeleted()) {
       throw new DomainException("Aluno %s nao pode ser excluído".formatted(aluno.getAlunoId()));
     }
-    
+
     alunoPer.getTurmas().forEach(t -> {
-      t.getAlunos().remove(alunoPer);
-      turmaRepository.save(t); // remove o aluno da turma no banco de dados
       var turma = TurmaMapper.toDomain(t);
-      turmaActions.desmatricularAluno(turma, aluno); // emite o evento de domínio
+
+      desmatricularAluno.handle(
+        new DesmatricularAlunoTurmaCommand(turma.getTurmaId(), aluno.getAlunoId())
+      );
+      
     });
 
     alunoRepository.delete(alunoPer); // exclui o aluno no banco de dados

@@ -10,7 +10,6 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.events.TurmaExcluida
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.TurmaActions;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;
@@ -36,8 +35,13 @@ public class ExcluirTurmaUseCase implements RequestHandler<ExcluirTurmaCommand, 
   @Override
   @Transactional
   public Void handle(ExcluirTurmaCommand cmd) {
-    var turmaPer = repository.findById(cmd.getTurmaId())
-        .orElseThrow(() -> new NotFoundException("Turma %s nao encontrada".formatted(cmd.getTurmaId())));
+    var result = repository.findById(cmd.getTurmaId());
+    
+    if(result.isEmpty()) {
+      return null; // não faz nada, pois método é idempotente
+    }
+    
+    var turmaPer = result.get();
             
     repository.delete(turmaPer); // exclui a turma no banco de dados
     var turma = TurmaMapper.toDomain(turmaPer);

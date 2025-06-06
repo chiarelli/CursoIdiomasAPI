@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarTurmasDoAlunoQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarTurmasQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarTurmaPeloIdQuery;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
@@ -41,7 +42,7 @@ public class TurmasController {
 
   @PostMapping
   public TurmaJsonResponse cadastrarTurma(@RequestBody NovaTurmaJsonRequest request) {
-    var cmd = new CadastrarNovaTurmaCommand(request.getNumero(), request.getAnoLetivo());
+    var cmd = new CadastrarNovaTurmaCommand(request.getNumeroTurma(), request.getAnoLetivo());
     var result = mediator.dispatch(cmd);
     return new TurmaJsonResponse(result.getTurmaId(), result.getNumeroTurma(), result.getAnoLetivo(), null);
   }
@@ -92,8 +93,21 @@ public class TurmasController {
     @PathVariable UUID id, 
     @RequestBody TurmaJsonRequest turmaJsonRequest
   ) {
-    // TODO implementar atualizacao de turma
-    throw new UnsupportedOperationException("implement method atualizarTurma");
+    var cmd = new AtualizarDadosTurmaCommand(
+      id,
+      turmaJsonRequest.getNumeroTurma(),
+      turmaJsonRequest.getAnoLetivo()
+    );
+
+    var result = mediator.dispatch(cmd);
+    return new TurmaJsonResponse(
+      result.getTurmaId(),
+      result.getNumeroTurma(), 
+      result.getAnoLetivo(), 
+      result.getAlunos().stream()
+        .map(aluno -> aluno.getAlunoId())
+        .collect(Collectors.toSet())
+    );
   }
 
   @DeleteMapping("{id}")

@@ -28,12 +28,19 @@ import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.CriarAlun
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
 
 import io.jkratz.mediator.core.Mediator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 
 @RestController
 @RequestMapping("/api/v1/alunos")
+@Tag(
+  name = "Alunos",
+  description = "Endpoints para gerenciamento de alunos"
+)
 public class AlunosController {
 
   private final Mediator mediator;
@@ -43,6 +50,14 @@ public class AlunosController {
   }
 
   @PostMapping
+  @Operation(
+    summary = "Cadastrar aluno", 
+    description = "Cria um novo aluno.",
+    responses = {
+      @ApiResponse(responseCode = "201", description = "Aluno criado com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Erro ao criar aluno")
+    }
+  )
   public ResponseEntity<AlunoJsonResponse> cadastrarAluno(@RequestBody CriarAlunoJsonRequest request) {
     var cmd = new RegistrarNovoAlunoCommand(
       request.getNome(), 
@@ -69,6 +84,10 @@ public class AlunosController {
   }
 
   @GetMapping
+  @Operation(
+    summary = "Listar alunos",
+    description = "Retorna uma lista de alunos com paginação."
+  )
   public PageCollectionJsonResponse<AlunoJsonResponse> listarAlunos(
     @RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
     @RequestParam(name = "size", defaultValue = "10") @Min(1) @Max(100) Integer size
@@ -97,6 +116,14 @@ public class AlunosController {
   }
 
   @GetMapping("{id}")
+  @Operation(
+    summary = "Buscar aluno por id",
+    description = "Retorna um aluno pelo id",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "Aluno encontrado"),
+      @ApiResponse(responseCode = "404", description = "Aluno não encontrado")
+    }
+  )
   public AlunoJsonResponse buscarAlunoPorId(@PathVariable UUID id) {
     var query = new RecuperarAlunoPeloIdQuery(id);
     var result = mediator.dispatch(query);
@@ -115,6 +142,15 @@ public class AlunosController {
   }
   
   @PutMapping("{id}")
+  @Operation(
+    summary = "Atualizar aluno",
+    description = "Atualiza os dados de um aluno",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "Aluno atualizado com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Erro ao atualizar aluno"),
+      @ApiResponse(responseCode = "404", description = "Aluno não encontrado")
+    }
+  )
   public AlunoJsonResponse atualizarAluno(
     @PathVariable UUID id, 
     @RequestBody AlunoJsonRequest request
@@ -141,6 +177,14 @@ public class AlunosController {
   }
     
   @DeleteMapping("{id}")
+  @Operation(
+    summary = "Excluir aluno",
+    description = "Exclui um aluno definitivamente",
+    responses = {
+      @ApiResponse(responseCode = "204", description = "Aluno excluído com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Erro ao excluir aluno"),
+    }
+  )
   public ResponseEntity<Void> excluirAluno(@PathVariable UUID id) {
     var cmd = new ExcluirAlunoCommand(id);
     mediator.dispatch(cmd);
@@ -149,6 +193,10 @@ public class AlunosController {
   }
 
   @GetMapping("turma/{turmaId}")
+  @Operation(
+    summary = "Listar alunos da turma",
+    description = "Retorna uma lista de todos os alunos da uma turma"
+  )
   public List<AlunoJsonResponse> listarAlunosDaTurma(
     @PathVariable UUID turmaId
     ) {

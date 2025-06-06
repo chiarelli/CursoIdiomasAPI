@@ -27,11 +27,15 @@ import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJson
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonResponse;
 
 import io.jkratz.mediator.core.Mediator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping("api/v1/turmas")
+@Tag(name = "Turmas", description = "Endpoints para gerenciamento de turmas")
 public class TurmasController {
 
   private final Mediator mediator;
@@ -41,6 +45,14 @@ public class TurmasController {
   }
 
   @PostMapping
+  @Operation(
+    summary = "Cadastrar turma",
+    description = "Cria uma nova turma.",
+    responses = {
+      @ApiResponse(responseCode = "201", description = "Turma criada com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Erro ao criar turma")
+    }
+  )
   public TurmaJsonResponse cadastrarTurma(@RequestBody NovaTurmaJsonRequest request) {
     var cmd = new CadastrarNovaTurmaCommand(request.getNumeroTurma(), request.getAnoLetivo());
     var result = mediator.dispatch(cmd);
@@ -48,6 +60,10 @@ public class TurmasController {
   }
 
   @GetMapping
+  @Operation(
+    summary = "Listar turmas",
+    description = "Lista todas as turmas com paginação."
+  )
   public PageCollectionJsonResponse<TurmaJsonResponse> listarTurmas(
     @RequestParam(name = "page", defaultValue = "1") @Min(1) Integer page,
     @RequestParam(name = "size", defaultValue = "10") @Min(1) @Max(100) Integer size
@@ -75,6 +91,10 @@ public class TurmasController {
   }
 
   @GetMapping("{id}")
+  @Operation(
+    summary = "Buscar turma por id",
+    description = "Retorna uma turma pelo id."
+  )
   public TurmaJsonResponse buscarTurmaPorId(@PathVariable UUID id) {
     var query = new RecuperarTurmaPeloIdQuery(id);
     var result = mediator.dispatch(query);
@@ -89,6 +109,15 @@ public class TurmasController {
   }
 
   @PutMapping("{id}")
+  @Operation(
+    summary = "Atualizar turma",
+    description = "Atualiza os dados de uma turma",
+    responses = {
+      @ApiResponse(responseCode = "200", description = "Turma atualizada com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Erro ao atualizar turma"),
+      @ApiResponse(responseCode = "404", description = "Turma não encontrada")
+    }
+  )
   public TurmaJsonResponse atualizarTurma(
     @PathVariable UUID id, 
     @RequestBody TurmaJsonRequest turmaJsonRequest
@@ -111,6 +140,15 @@ public class TurmasController {
   }
 
   @DeleteMapping("{id}")
+  @ApiResponse
+  @Operation(
+    summary = "Excluir turma",
+    description = "Exclui uma turma definitivamente",
+    responses = {
+      @ApiResponse(responseCode = "204", description = "Turma excluída com sucesso"),
+      @ApiResponse(responseCode = "400", description = "Erro ao excluir turma"),
+    }
+  )
   public ResponseEntity<Void> excluirTurma(@PathVariable UUID id) {
     var cmd = new ExcluirTurmaCommand(id);
     mediator.dispatch(cmd);
@@ -119,6 +157,10 @@ public class TurmasController {
   }
 
   @GetMapping("aluno/{alunoId}")
+  @Operation(
+    summary = "Listar turmas do aluno",
+    description = "Listar todas as turmas do um aluno"
+  )
   public List<TurmaJsonResponse> listarTurmasDoAluno(
     @PathVariable UUID alunoId
   ) {

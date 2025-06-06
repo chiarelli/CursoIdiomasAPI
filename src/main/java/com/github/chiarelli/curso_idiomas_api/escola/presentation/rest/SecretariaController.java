@@ -15,9 +15,11 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularA
 import io.jkratz.mediator.core.Mediator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("api/v1/secretaria")
+@Tag(name = "Secretaria", description = "Endpoints para tarefas administrativas da escola")
 public class SecretariaController {
 
   private final Mediator mediator;

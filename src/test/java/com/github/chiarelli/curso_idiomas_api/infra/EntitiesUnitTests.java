@@ -37,7 +37,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
 @SpringBootTest
-public class EntitiesUnitTestes {
+public class EntitiesUnitTests {
 
   @Autowired AlunoRepository alunoRepository;
   @Autowired TurmaRepository turmaRepository;

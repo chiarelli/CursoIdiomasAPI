@@ -1,6 +1,7 @@
 package com.github.chiarelli.curso_idiomas_api.infra;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -268,6 +269,38 @@ public class EntitiesUnitTestes {
   }
 
   @Test
+  void cadastrarNovoAlunoVerificarAtributos() {
+    // prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+
+    // Cadastrar turma
+    var turma =cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        496,
+        2025
+    ));
+
+    // Cadastrar aluno
+    var aluno = cadastrarAluno.handle(
+      new RegistrarNovoAlunoCommand(
+        "Aluno 1",
+        "227.946.130-73",
+        "782tE@example.com",
+        Set.of(turma.getTurmaId())
+      )
+    );
+
+    // Verificar atributos
+    assertDoesNotThrow(() -> UUID.fromString(aluno.getAlunoId().toString()));
+    assertEquals("Aluno 1", aluno.getNome());
+    assertEquals("22794613073", aluno.getCpf());
+    assertEquals("782tE@example.com", aluno.getEmail());
+    assertTrue(aluno.getTurmas().contains(turma));
+
+  }
+
+  @Test
   void cadastrarTurmaComDadosInvalidos() {
     alunoRepository.deleteAll();
     turmaRepository.deleteAll();
@@ -326,6 +359,25 @@ public class EntitiesUnitTestes {
     
   }
 
+  @Test
+  void cadastrarNovoTurmaVerificarAtributos() {
+    // prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+
+    // Cadastrar turma
+    var turma =cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        496,
+        2025
+    ));
+
+    // Verificar atributos
+    assertDoesNotThrow(() -> UUID.fromString(turma.getTurmaId().toString()));
+    assertEquals(496, turma.getNumeroTurma());
+    assertEquals(2025, turma.getAnoLetivo());
+  }
+  
   @Autowired MatricularAlunoEmTurmaUseCase matricularAluno;
   
   @Test

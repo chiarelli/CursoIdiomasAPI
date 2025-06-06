@@ -67,7 +67,7 @@ A API possui documentação interativa disponível via Swagger:
 - `GET /api/v1/alunos/{id}` – Buscar aluno por ID  
 - `PUT /api/v1/alunos/{id}` – Atualizar dados do aluno  
 - `DELETE /api/v1/alunos/{id}` – Excluir aluno (somente se não estiver em turma)
-- `GET /api/v1/alunos/{alunoId}/turma/{turmaId}` – Listar todos os alunos da turma
+- `GET /api/v1/alunos/turma/{turmaId}` – Listar todos os alunos da turma
 
 #### 🏫 Turmas
 
@@ -76,7 +76,7 @@ A API possui documentação interativa disponível via Swagger:
 - `GET /api/v1/turmas/{id}` – Buscar turma por ID  
 - `PUT /api/v1/turmas/{id}` – Atualizar turma  
 - `DELETE /api/v1/turmas/{id}` – Excluir turma (somente se estiver vazia)
-- `GET /api/v1/turmas/{turmaId}/aluno/{alunoId}` – Listar todas as turmas do aluno
+- `GET /api/v1/turmas/aluno/{alunoId}` – Listar todas as turmas do aluno
 
 #### 👩‍🏫 Secretaria
 
@@ -118,9 +118,9 @@ No terminal (ou pela IDE):
 
 - ✅ Entidades Aluno e Turma com relacionamento
 
-- [ ] Regras de negócio implementadas
+- ✅ Regras de negócio implementadas
 
-- [ ] Rotas da API Rest implementadas
+- ✅ Rotas da API Rest implementadas
 
 - [ ] Documentação via Swagger
 
@@ -128,7 +128,7 @@ No terminal (ou pela IDE):
 
 - ✅ Integração com SQL Server
 
-- [ ] Testes automatizados (em desenvolvimento)
+- ✅ Testes automatizados
 
 ---
 ###### 👨‍💻 Autor

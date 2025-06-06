@@ -78,10 +78,6 @@ public class AlunoPersistence {
     return cpf;
   }
 
-  public void setCpf(String cpf) {
-    this.cpf = cpf;
-  }
-
   public String getEmail() {
     return email;
   }

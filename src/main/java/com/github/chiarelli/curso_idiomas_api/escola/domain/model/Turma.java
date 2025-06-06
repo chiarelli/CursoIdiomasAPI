@@ -38,9 +38,9 @@ public class Turma implements TurmaInterface {
     this.alunos = alunos;
   }
 
-  public Turma(UUID turmaId, Integer turmaNumero, Integer anoLetivo) {
+  public Turma(UUID turmaId, Integer numeroTurma, Integer anoLetivo) {
     this.turmaId = turmaId;
-    this.numeroTurma = turmaNumero;
+    this.numeroTurma = numeroTurma;
     setAnoLetivo(anoLetivo);
   }
 

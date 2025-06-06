@@ -14,6 +14,6 @@ public class TurmaMapper {
       .map(AlunoMapper::toDomainWithoutTurmas)  // ✅ sem turmas
       .collect(Collectors.toSet());
 
-    return new Turma(persistence .getId(), persistence.getTurmaId(), persistence.getAnoLetivo(), alunos);
+    return new Turma(persistence .getId(), persistence.getNumeroTurma(), persistence.getAnoLetivo(), alunos);
   }
 }

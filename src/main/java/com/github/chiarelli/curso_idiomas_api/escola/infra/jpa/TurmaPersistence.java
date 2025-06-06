@@ -16,7 +16,7 @@ import jakarta.persistence.UniqueConstraint;
 @Entity
 @Table(
   name = "tb_turmas",
-  uniqueConstraints = @UniqueConstraint(columnNames = {"turma_id", "ano_letivo"})
+  uniqueConstraints = @UniqueConstraint(columnNames = {"numero_turma", "ano_letivo"})
 )
 public class TurmaPersistence {
 
@@ -24,10 +24,10 @@ public class TurmaPersistence {
   @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(name = "turma_id", nullable = false)
-  private Integer turmaId;
+  @Column(name = "numero_turma", nullable = false)
+  private Integer numeroTurma;
 
-  @Column(nullable = false)
+  @Column(name = "ano_letivo", nullable = false)
   private Integer anoLetivo;
 
   @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
@@ -35,9 +35,9 @@ public class TurmaPersistence {
 
   public TurmaPersistence() {}
 
-  public TurmaPersistence(UUID id, Integer turmaId, Integer anoLetivo) {
+  public TurmaPersistence(UUID id, Integer numeroTurma, Integer anoLetivo) {
     this.id = id;
-    this.turmaId = turmaId;
+    this.numeroTurma = numeroTurma;
     this.anoLetivo = anoLetivo;
   }
 
@@ -57,12 +57,12 @@ public class TurmaPersistence {
     this.id = id;
   }
 
-  public Integer getTurmaId() {
-    return turmaId;
+  public Integer getNumeroTurma() {
+    return numeroTurma;
   }
 
-  public void setTurmaId(Integer turmaId) {
-    this.turmaId = turmaId;
+  public void setNumeroTurma(Integer numeroTurma) {
+    this.numeroTurma = numeroTurma;
   }
 
   public Integer getAnoLetivo() {
@@ -91,12 +91,12 @@ public class TurmaPersistence {
     if (this == o) return true;
     if (!(o instanceof TurmaPersistence)) return false;
     TurmaPersistence turma = (TurmaPersistence) o;
-    return turmaId != null && turmaId.equals(turma.turmaId);
+    return numeroTurma != null && numeroTurma.equals(turma.numeroTurma);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(turmaId);
+    return Objects.hashCode(numeroTurma);
   }
 
 }

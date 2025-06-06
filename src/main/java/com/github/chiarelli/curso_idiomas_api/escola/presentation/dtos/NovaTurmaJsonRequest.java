@@ -3,21 +3,22 @@ package com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"numero", "ano_letivo"})
+@JsonPropertyOrder({"numero_turma", "ano_letivo"})
 public class NovaTurmaJsonRequest {
 
-  private final Integer numero;
+  @JsonProperty("numero_turma")
+  private final Integer numeroTurma;
 
   @JsonProperty("ano_letivo")
   private final Integer anoLetivo;
   
-  public NovaTurmaJsonRequest(Integer numero, Integer anoLetivo) {
-    this.numero = numero;
+  public NovaTurmaJsonRequest(Integer numeroTurma, Integer anoLetivo) {
+    this.numeroTurma = numeroTurma;
     this.anoLetivo = anoLetivo;
   }
 
-  public Integer getNumero() {
-    return numero;
+  public Integer getNumeroTurma() {
+    return numeroTurma;
   }
 
   public Integer getAnoLetivo() {

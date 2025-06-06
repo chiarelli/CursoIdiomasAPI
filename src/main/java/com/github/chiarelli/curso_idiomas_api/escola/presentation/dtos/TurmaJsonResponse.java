@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"id", "numero", "ano_letivo", "aluno_ids"})
+@JsonPropertyOrder({"id", "numero_turma", "ano_letivo", "aluno_ids"})
 public class TurmaJsonResponse extends NovaTurmaJsonRequest {
 
   private final UUID id;

@@ -70,7 +70,7 @@ public class DesmatricularAlunoEmTurmaUseCase implements RequestHandler<Desmatri
 
     @Override
     public void handle(AlunoDesmatriculadoTurmaEvent evt) {
-      logger.info("Aluno %s removido da turma %s ".formatted(evt.getAlunoId(), evt.getTurmaId()));
+      logger.info("Aluno %s desmatriculado da turma %s ".formatted(evt.getAlunoId(), evt.getTurmaId()));
     }
   
     

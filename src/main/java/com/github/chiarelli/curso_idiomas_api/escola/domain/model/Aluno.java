@@ -88,7 +88,7 @@ public class Aluno implements AlunoInterface {
   }
 
   public boolean canBeDeleted() {
-    return turmas.size() == 0;
+    return turmas.size() <= 1;
   }
 
   // ##### Getters #####

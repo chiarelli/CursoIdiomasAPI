@@ -41,7 +41,7 @@ public class TurmaActions extends AbstractAggregateActions {
     turma.removeAluno(aluno);
     aluno.removeTurma(turma);
 
-    validator.validate(aluno);
+    // validator.validate(aluno);
     validator.validate(turma);
 
     mediator.emit(new AlunoDesmatriculadoTurmaEvent(aluno.getAlunoId(), turma.getTurmaId()));

@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
@@ -20,6 +21,7 @@ public class RecuperarAlunoPeloIdUseCase implements RequestHandler<RecuperarAlun
   @Autowired AlunoRepository repository;
 
   @Override
+  @Transactional(readOnly = true)
   public AlunoInterface handle(RecuperarAlunoPeloIdQuery query) {
     var alunoId = query.getAlunoId();
     var opPersistence = repository.findById(alunoId);

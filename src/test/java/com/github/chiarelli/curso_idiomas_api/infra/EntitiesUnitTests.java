@@ -2,6 +2,7 @@ package com.github.chiarelli.curso_idiomas_api.infra;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,16 +16,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.TransactionSystemException;
 
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.AlterarDadosAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.AtualizarDadosTurmaUsecase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarTurmaUseCase;
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.DesmatricularAlunoEmTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.ExcluirTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.MatricularAlunoEmTurmaUseCase;
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.RecuperarAlunoPeloIdUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.DesmatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
@@ -469,6 +474,71 @@ public class EntitiesUnitTests {
 
   }
 
+  @Autowired DesmatricularAlunoEmTurmaUseCase desmatricularAluno;
+  @Autowired RecuperarAlunoPeloIdUseCase recuperarAluno;
+  
+  @Test
+  void desmatricularAlunoEmTurma() {
+    // Prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+
+    // Cadastrar turma1
+    var turma1 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        125,
+        2025
+    ));
+
+    // Cadastrar turma2
+    var turma2 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        630,
+        2025
+    ));
+
+    // Cadastrar aluno
+    var aluno = cadastrarAluno.handle(
+      new RegistrarNovoAlunoCommand(
+        "Aluno 1",
+        "487.492.760-26",
+        "gG0wI@example.com",
+        Set.of(turma1.getTurmaId(), turma2.getTurmaId())
+      )
+    );
+
+    // Verificar se aluno foi matriculado nas duas turmas
+    var alunoRecuperado = recuperarAluno.handle(
+      new RecuperarAlunoPeloIdQuery(
+        aluno.getAlunoId()
+      )
+    );
+
+    assertEquals(2, alunoRecuperado.getTurmas().size());
+    assertTrue(alunoRecuperado.getTurmas().contains(turma1));
+    assertTrue(alunoRecuperado.getTurmas().contains(turma2));
+
+    // Desmatricular aluno da turma1
+    desmatricularAluno.handle(
+      new DesmatricularAlunoTurmaCommand(
+        turma1.getTurmaId(),
+        alunoRecuperado.getAlunoId()
+      )
+    );
+
+    // Verificar se aluno foi desmatriculado da turma1
+    alunoRecuperado = recuperarAluno.handle(
+      new RecuperarAlunoPeloIdQuery(
+        alunoRecuperado.getAlunoId()
+      )
+    );
+
+    assertEquals(1, alunoRecuperado.getTurmas().size());
+    assertFalse(alunoRecuperado.getTurmas().contains(turma1));
+    assertTrue(alunoRecuperado.getTurmas().contains(turma2));
+
+  }
+  
   @Autowired ExcluirTurmaUseCase excluirTurma;
 
   @Test

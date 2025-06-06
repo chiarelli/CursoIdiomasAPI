@@ -90,7 +90,7 @@ A API possui documentação interativa disponível via Swagger:
 #### 1. Clonar o repositório
 ```bash
 git clone https://github.com/chiarelli/CursoIdiomasAPI.git
-cd api-idiomas
+cd CursoIdiomasAPI
 ```
 #### 2. Executar o banco SQL Server (via docker)
 
@@ -98,8 +98,9 @@ cd api-idiomas
 docker-compose -f docker-compose.dev.yml up -d
 ```
 
-#### 3. Executar os testes (opcional)
-Lembrando que o container precisa estar `ready` para realizar os testes.
+#### 3. Executar os testes
+O mode test usa *testcontainers*, não o service de banco mssql criado pelo *docker-compose.dev.yml*.
+
 ```bash
 ./mvnw test
 ```
@@ -112,23 +113,23 @@ No terminal (ou pela IDE):
 ```
 ---
 
-### ☑️ Status atual
+### ✅ Status atual
 
-- ✅ Projeto inicial com Spring Boot configurado
+- [x] Projeto inicial com Spring Boot configurado
 
-- ✅ Entidades Aluno e Turma com relacionamento
+- [x] Entidades Aluno e Turma com relacionamento
 
-- ✅ Regras de negócio implementadas
+- [x] Regras de negócio implementadas
 
-- ✅ Rotas da API Rest implementadas
+- [x] Rotas da API Rest implementadas
 
-- [ ] Documentação via Swagger
+- [x] Documentação via Swagger
 
-- ✅ Validações com Jakarta Bean Validation
+- [x] Validações com Jakarta Bean Validation
 
-- ✅ Integração com SQL Server
+- [x] Integração com SQL Server
 
-- ✅ Testes automatizados
+- [x] Testes automatizados *(usando testscontainers)*
 
 ---
 ###### 👨‍💻 Autor

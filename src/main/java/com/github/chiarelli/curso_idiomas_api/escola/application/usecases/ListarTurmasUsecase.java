@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.PageListarTurmasQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
@@ -24,6 +25,7 @@ public class ListarTurmasUsecase implements RequestHandler<PageListarTurmasQuery
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Page<TurmaInterface> handle(PageListarTurmasQuery query) {
     var pageable = PageRequest.of(query.getPage() - 1, query.getSize());
     var turmaPer = repository.findAll(pageable);

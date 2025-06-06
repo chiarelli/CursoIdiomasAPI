@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarAlunosDaTurmaQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
@@ -23,6 +24,7 @@ public class ListarAlunosDaTurmaUsecase implements RequestHandler<ListarAlunosDa
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Set<AlunoInterface> handle(ListarAlunosDaTurmaQuery query) {
     var turma = repository.findById(query.getTurmaId())
       .orElseThrow(() -> new NotFoundException("Turma %s nao encontrada".formatted(query.getTurmaId())));

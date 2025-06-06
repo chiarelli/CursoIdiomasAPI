@@ -14,11 +14,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.TransactionSystemException;
 
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.AlterarDadosAlunoUseCase;
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.AtualizarDadosTurmaUsecase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.ExcluirTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.MatricularAlunoEmTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosAlunoCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
@@ -316,10 +320,9 @@ public class EntitiesUnitTestes {
     }).getUserMessages();
 
     assertTrue(
-      errorMsgs2.get("error").equals("Turma com id "+ turma.getNumeroTurma() +" já cadastrada"), 
-      "deveria apresentar mensagem \"Turma com id "+ turma.getNumeroTurma() +" já cadastrada\""
+      errorMsgs2.get("error").equals("Turma com numero %s e ano letivo %s já cadastrada".formatted(turma.getNumeroTurma(), turma.getAnoLetivo())),
+      "deveria apresentar mensagem \"Turma com numero %s e ano letivo %s já cadastrada\"".formatted(turma.getNumeroTurma(), turma.getAnoLetivo())
     );
-
     
   }
 
@@ -470,4 +473,150 @@ public class EntitiesUnitTestes {
     });
     
   }
+
+  @Autowired AtualizarDadosTurmaUsecase atualizarTurma;
+
+  @Test
+  void atualizarTurma() {
+    // Prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+
+    // Cadastrar turma1
+    var turma1 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        125,
+        2025
+    ));
+
+    // Cadastrar turma2
+    cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        630,
+        2025
+    ));
+
+    // Atualizar turma1
+    var errorMsg1 = assertThrows(DomainException.class, () -> {
+
+      atualizarTurma.handle(
+        new AtualizarDadosTurmaCommand(
+          turma1.getTurmaId(),
+          630,
+          2025
+        )
+      );
+
+    }).getUserMessages();
+
+    assertTrue(
+      errorMsg1.get("error").equals("Turma com numero 630 e ano letivo 2025 já cadastrada"), 
+      "deveria apresentar mensagem \"Turma com numero 630 e ano letivo 2025 já cadastrada\""
+    );
+
+    // Atualizar turma1
+
+    var turmaAtualizada = atualizarTurma.handle(
+      new AtualizarDadosTurmaCommand(
+        turma1.getTurmaId(),
+        630,
+        2026
+      )
+    );
+
+    assertTrue(
+      turmaAtualizada.getTurmaId() == turma1.getTurmaId(), 
+      "deveria apresentar turma id " + turma1.getTurmaId()
+    );
+
+    assertTrue(
+      turmaAtualizada.getAnoLetivo() == 2026, 
+      "deveria apresentar ano letivo 2026"
+    );
+
+    assertTrue(
+      turmaAtualizada.getNumeroTurma() == 630, 
+      "deveria apresentar numero turma 630"
+    );
+
+    // Atualizar turma1 com dados inválidos
+    assertThrows(DomainException.class, () -> {
+
+      atualizarTurma.handle(
+        new AtualizarDadosTurmaCommand(
+          turma1.getTurmaId(),
+          0,
+          1899
+        )
+      );
+
+    }).getUserMessages();
+  
+  }
+
+  @Autowired AlterarDadosAlunoUseCase atualizarAluno;
+
+  @Test
+  void atualizarAluno() {
+    // Prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+    
+    // Cadastrar turma
+    var turma = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        450,
+        2025
+    ));
+
+    // Cadastrar aluno
+    var aluno = cadastrarAluno.handle(
+      new RegistrarNovoAlunoCommand(
+        "Aluno 1",
+        "840.467.530-99",
+        "gG0wI@example.com",
+        Set.of(turma.getTurmaId())
+      )
+    );
+
+    // Atualizar aluno Ok
+    var alunoAtualizado = atualizarAluno.handle(
+      new AtualizarDadosAlunoCommand(
+        aluno.getAlunoId(),
+        "Aluno 1 (atualizado)",
+        "yyE7S@example.com"
+      )
+    );
+
+    assertTrue(
+      alunoAtualizado.getAlunoId().equals(aluno.getAlunoId()), 
+      "deveria apresentar id " + aluno.getAlunoId()
+    );
+    
+    assertTrue(
+      alunoAtualizado.getEmail().equals("yyE7S@example.com"), 
+      "deveria apresentar email yyE7S@example.com"
+    );
+
+    assertTrue(
+      alunoAtualizado.getNome().equals("Aluno 1 (atualizado)"), 
+      "deveria apresentar nome Aluno 1 (atualizado)"
+    );
+
+    // Atualizar aluno com dados inválidos
+    assertThrows(DomainException.class, () -> {
+
+      atualizarAluno.handle(
+        new AtualizarDadosAlunoCommand(
+          alunoAtualizado.getAlunoId(),
+          "ab",
+          "yyE7S@"
+        )
+      );
+
+    });
+  
+  }
+
+
 }

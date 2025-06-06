@@ -17,19 +17,23 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.TransactionSystemException;
 
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
+import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarTurmaPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.AlterarDadosAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.AtualizarDadosTurmaUsecase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.CadastrarTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.DesmatricularAlunoEmTurmaUseCase;
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.ExcluirAlunoUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.ExcluirTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.MatricularAlunoEmTurmaUseCase;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.RecuperarAlunoPeloIdUseCase;
+import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.RecuperarTurmaPeloIdUsecase;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.DesmatricularAlunoTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
@@ -596,6 +600,118 @@ public class EntitiesUnitTests {
     
   }
 
+  @Autowired ExcluirAlunoUseCase excluirAluno;
+  @Autowired RecuperarTurmaPeloIdUsecase recuperarTurma;
+
+  @Test
+  void excluirAluno() {
+    // Prepare
+    alunoRepository.deleteAll();
+    turmaRepository.deleteAll();
+
+    // Cadastrar turma1
+    var turma1 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        985,
+        2025
+    ));
+
+    // Cadastrar turma1
+    var turma2 = cadastrarTurma.handle(
+      new CadastrarNovaTurmaCommand(
+        600,
+        2025
+    ));
+
+    // Cadastrar aluno
+    var aluno = cadastrarAluno.handle(
+      new RegistrarNovoAlunoCommand(
+        "Aluno 1",
+        "444.949.220-05",
+        "e4bVbs@example.com",
+        Set.of(turma1.getTurmaId(), turma2.getTurmaId())
+      )
+    );
+
+    // Cadastrar aluno controle
+    var aluno2 = cadastrarAluno.handle(
+      new RegistrarNovoAlunoCommand(
+        "Aluno 2",
+        "151.745.140-04",
+        "Hs8xv@example.com",
+        Set.of(turma1.getTurmaId(), turma2.getTurmaId())
+      )
+    );
+
+    // Tentar excluir aluno matriculado em duas turmas
+    var errorMsg = assertThrows(DomainException.class, () -> {
+      excluirAluno.handle(
+        new ExcluirAlunoCommand(
+          aluno.getAlunoId()
+        )
+      );
+    }).getUserMessages();
+
+    assertTrue(
+      errorMsg.get("error").equals("Aluno "+ aluno.getAlunoId() +" nao pode ser excluído"), 
+      "deveria apresentar mensagem \"Aluno "+ aluno.getAlunoId() +" nao pode ser excluído\""
+    );
+
+    // Desmatriculando aluno da turma1
+    desmatricularAluno.handle(
+      new DesmatricularAlunoTurmaCommand(
+        turma1.getTurmaId(),
+        aluno.getAlunoId()
+      )
+    );
+
+    // Tentar excluir aluno matriculado em duas turmas
+    assertDoesNotThrow(() -> {
+      excluirAluno.handle(
+        new ExcluirAlunoCommand(
+          aluno.getAlunoId()
+        )
+      );
+    });
+
+    // Recuperar aluno por ID
+    var errorMsg2 = assertThrows(NotFoundException.class, () -> {
+      
+      recuperarAluno.handle(
+        new RecuperarAlunoPeloIdQuery(
+          aluno.getAlunoId()
+        )
+      );
+
+    }).getMessage();
+
+    System.out.println(errorMsg2);
+    assertTrue(
+      errorMsg2.contains("aluno id " + aluno.getAlunoId() + " not exists"),
+      "deveria apresentar mensagem \"aluno id " + aluno.getAlunoId() + " not exists\""
+    );
+
+    // Recuperar turma por ID e verificar alunos
+    var turmaRecuperada1 = recuperarTurma.handle(
+      new RecuperarTurmaPeloIdQuery(
+        turma1.getTurmaId()
+      )
+    );
+
+    var turmaRecuperada2 = recuperarTurma.handle(
+      new RecuperarTurmaPeloIdQuery(
+        turma2.getTurmaId()
+      )
+    );
+
+    assertFalse(turmaRecuperada1.getAlunos().contains(aluno), "Turma1 não deveria conter o aluno %s".formatted(aluno.getAlunoId()));
+    assertFalse(turmaRecuperada2.getAlunos().contains(aluno), "Turma2 não deveria conter o aluno %s".formatted(aluno.getAlunoId()));
+    
+    assertTrue(turmaRecuperada1.getAlunos().contains(aluno2), "Turma1 deveria conter o aluno %s".formatted(aluno2.getAlunoId()));
+    assertTrue(turmaRecuperada2.getAlunos().contains(aluno2), "Turma2 deveria conter o aluno %s".formatted(aluno2.getAlunoId()));
+    
+  }
+  
   @Autowired AtualizarDadosTurmaUsecase atualizarTurma;
 
   @Test

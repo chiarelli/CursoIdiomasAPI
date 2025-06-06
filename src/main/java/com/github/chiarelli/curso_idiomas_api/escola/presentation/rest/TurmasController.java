@@ -158,7 +158,7 @@ public class TurmasController {
 
   @GetMapping("aluno/{alunoId}")
   @Operation(
-    summary = "Listar turmas do aluno",
+    summary = "Listar turmas em que o aluno está matriculado",
     description = "Listar todas as turmas do um aluno"
   )
   public List<TurmaJsonResponse> listarTurmasDoAluno(

@@ -49,7 +49,7 @@ public class SecretariaController {
       
       @DeleteMapping("desmatricular/turma/{turmaId}/aluno/{alunoId}")
       @Operation(
-        summary = "Desmatricular aluno na turma",
+        summary = "Desmatricular aluno da turma",
         responses = {
           @ApiResponse(responseCode = "204", description = "Aluno desmatriculado com sucesso"),
           @ApiResponse(responseCode = "400", description = "Erro ao desmatricular aluno"),

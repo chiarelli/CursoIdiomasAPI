@@ -9,16 +9,15 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import com.github.chiarelli.curso_idiomas_api.AbstractIntegrationTest;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Aluno;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
 
-@SpringBootTest
-public class AggregatesUnitTests {
+public class AggregatesUnitTests extends AbstractIntegrationTest {
 
   @Autowired InstanceValidator validator;
 

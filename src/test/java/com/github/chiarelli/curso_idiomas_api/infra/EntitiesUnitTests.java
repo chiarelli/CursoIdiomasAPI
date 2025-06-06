@@ -12,10 +12,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.TransactionSystemException;
 
+import com.github.chiarelli.curso_idiomas_api.AbstractIntegrationTest;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarAlunoPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.queries.RecuperarTurmaPeloIdQuery;
 import com.github.chiarelli.curso_idiomas_api.escola.application.usecases.AlterarDadosAlunoUseCase;
@@ -45,8 +45,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
 
-@SpringBootTest
-public class EntitiesUnitTests {
+public class EntitiesUnitTests extends AbstractIntegrationTest {
 
   @Autowired AlunoRepository alunoRepository;
   @Autowired TurmaRepository turmaRepository;

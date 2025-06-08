@@ -12,15 +12,15 @@ public class AlunoJsonResponse {
   private final String email;
   private final String cpf;
   
-  @JsonProperty("turma_ids")
-  private final Set<UUID> turmaIds;
+  @JsonProperty("turmas_matriculadas")
+  private final Set<TurmaRefJson> turmasMatriculadas;
 
-  public AlunoJsonResponse(UUID id, String nome, String email, String cpf, Set<UUID> turmasIds) {
+  public AlunoJsonResponse(UUID id, String nome, String email, String cpf, Set<TurmaRefJson> turmasMatriculadas) {
     this.id = id;
     this.nome = nome;
     this.email = email;
     this.cpf = cpf;
-    this.turmaIds = turmasIds;
+    this.turmasMatriculadas = turmasMatriculadas;
   }
 
   public UUID getId() {
@@ -39,8 +39,8 @@ public class AlunoJsonResponse {
     return cpf;
   }
 
-  public Set<UUID> getTurmaIds() {
-    return turmaIds;
+  public Set<TurmaRefJson> getTurmasMatriculadas() {
+    return turmasMatriculadas;
   }
 
 }

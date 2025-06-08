@@ -12,24 +12,24 @@ public class TurmaJsonResponse extends NovaTurmaJsonRequest {
 
   private final UUID id;
 
-  @JsonProperty("aluno_ids")
-  private final Set<UUID> alunoIds;
+  @JsonProperty("alunos_matriculados")
+  private final Set<AlunoRefJson> alunosRef;
 
-  public TurmaJsonResponse(UUID id, Integer numero, Integer anoLetivo, Set<UUID> alunoIds) {
+  public TurmaJsonResponse(UUID id, Integer numero, Integer anoLetivo, Set<AlunoRefJson> aluno) {
     super(numero, anoLetivo);
     this.id = id;
-    if(alunoIds == null) {
-      alunoIds = Set.of();
+    if(aluno == null) {
+      aluno = Set.of();
     }
-    this.alunoIds = alunoIds;
+    this.alunosRef = aluno;
   }
 
   public UUID getId() {
     return id;
   }
 
-  public Set<UUID> getAlunoIds() {
-    return Collections.unmodifiableSet(alunoIds);
+  public Set<AlunoRefJson> getAlunosRef() {
+    return Collections.unmodifiableSet(alunosRef);
   }
 
 }

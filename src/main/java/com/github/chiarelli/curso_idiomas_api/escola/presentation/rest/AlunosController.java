@@ -21,13 +21,13 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.queries.Recuper
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirAlunoCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNovoAlunoCommand;
-import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.BadRequestResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.CriarAlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.ResourceNotFoundResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaRefJson;
 
 import io.jkratz.mediator.core.Mediator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,7 +80,7 @@ public class AlunosController {
     var result = mediator.dispatch(cmd);
     var turmaIds = result.getTurmas()
       .stream()
-      .map(t -> t.getTurmaId())
+      .map(t -> new TurmaRefJson(t.getTurmaId()))
       .collect(Collectors.toSet());
     
     var alunoResp = new AlunoJsonResponse(
@@ -119,7 +119,7 @@ public class AlunosController {
                 aluno.getEmail(),
                 aluno.getCpf(),
                 aluno.getTurmas().stream()
-                    .map(TurmaInterface::getTurmaId)
+                    .map(t -> new TurmaRefJson(t.getTurmaId()))
                     .collect(Collectors.toSet())
             )
         ).collect(Collectors.toList())
@@ -147,7 +147,7 @@ public class AlunosController {
     var result = mediator.dispatch(query);
     var turmaIds = result.getTurmas()
       .stream()
-      .map(t -> t.getTurmaId())
+      .map(t -> new TurmaRefJson(t.getTurmaId()))
       .collect(Collectors.toSet());
 
     return new AlunoJsonResponse(
@@ -196,7 +196,7 @@ public class AlunosController {
     var result = mediator.dispatch(cmd);
     var turmaIds = result.getTurmas()
       .stream()
-      .map(t -> t.getTurmaId())
+      .map(t -> new TurmaRefJson(t.getTurmaId()))
       .collect(Collectors.toSet());
     
     return new AlunoJsonResponse(
@@ -249,7 +249,7 @@ public class AlunosController {
         aluno.getEmail(),
         aluno.getCpf(),
         aluno.getTurmas().stream()
-          .map(TurmaInterface::getTurmaId)
+          .map(t -> new TurmaRefJson(t.getTurmaId()))
           .collect(Collectors.toSet())
       ))
       .collect(Collectors.toList());

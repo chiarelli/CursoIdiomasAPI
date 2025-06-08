@@ -21,6 +21,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.queries.Recuper
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoRefJson;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.BadRequestResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
@@ -94,7 +95,7 @@ public class TurmasController {
               turma.getNumeroTurma(), 
               turma.getAnoLetivo(), 
               turma.getAlunos().stream()
-                  .map(aluno -> aluno.getAlunoId())
+                  .map(aluno -> new AlunoRefJson(aluno.getAlunoId()))
                   .collect(Collectors.toSet())
           )
       ).collect(Collectors.toList())
@@ -114,7 +115,7 @@ public class TurmasController {
       result.getNumeroTurma(), 
       result.getAnoLetivo(), 
       result.getAlunos().stream()
-        .map(aluno -> aluno.getAlunoId())
+        .map(aluno -> new AlunoRefJson(aluno.getAlunoId()))
         .collect(Collectors.toSet())
     );
   }
@@ -158,7 +159,7 @@ public class TurmasController {
       result.getNumeroTurma(), 
       result.getAnoLetivo(), 
       result.getAlunos().stream()
-        .map(aluno -> aluno.getAlunoId())
+        .map(aluno -> new AlunoRefJson(aluno.getAlunoId()))
         .collect(Collectors.toSet())
     );
   }
@@ -204,7 +205,7 @@ public class TurmasController {
         turma.getNumeroTurma(), 
         turma.getAnoLetivo(), 
         turma.getAlunos().stream()
-          .map(aluno -> aluno.getAlunoId())
+          .map(aluno -> new AlunoRefJson(aluno.getAlunoId()))
           .collect(Collectors.toSet())
       )
     ).collect(Collectors.toList());  

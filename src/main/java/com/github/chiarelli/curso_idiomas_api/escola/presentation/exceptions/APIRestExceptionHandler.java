@@ -10,22 +10,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.BadRequestResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.ResourceNotFoundResponse;
 
 @ControllerAdvice
 public class APIRestExceptionHandler {
 
   @ExceptionHandler(DomainException.class)
-  public ResponseEntity<Map<String, Object>> handleUIException(DomainException ex) {
-    return new ResponseEntity<>(ex.getUserMessages(), HttpStatus.BAD_REQUEST);
+  public ResponseEntity<BadRequestResponse> handleUIException(DomainException ex) {
+    var badResp = new BadRequestResponse(ex.getUserMessages());
+    return new ResponseEntity<>(badResp, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<Map<String, Object>> handleNotFoundException(NotFoundException ex) {
-    return new ResponseEntity<>(Map.of("not_found", ex.getMessage()), HttpStatus.NOT_FOUND);
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<ResourceNotFoundResponse> handleNotFoundException(ResourceNotFoundException ex) {
+    var notFound = new ResourceNotFoundResponse(ex.getMessage());
+    return new ResponseEntity<>(notFound, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+  public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
     var cause = ex.getCause();
     if (cause instanceof JsonParseException) {
       return handleJsonParseException((JsonParseException) cause);
@@ -34,8 +38,9 @@ public class APIRestExceptionHandler {
   }
 
   @ExceptionHandler(JsonParseException.class)
-  public ResponseEntity<Map<String, Object>> handleJsonParseException(JsonParseException ex) {
-    return new ResponseEntity<>(Map.of("error", "JSON inválido"), HttpStatus.BAD_REQUEST);
+  public ResponseEntity<BadRequestResponse> handleJsonParseException(JsonParseException ex) {
+    var badResp = new BadRequestResponse(Map.of("invalid_json","JSON inválido"));
+    return new ResponseEntity<>(badResp, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(Throwable.class)

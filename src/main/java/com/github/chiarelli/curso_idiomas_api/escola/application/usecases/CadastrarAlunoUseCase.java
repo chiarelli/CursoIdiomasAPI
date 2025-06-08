@@ -34,12 +34,12 @@ public class CadastrarAlunoUseCase implements RequestHandler<RegistrarNovoAlunoC
 
   public CadastrarAlunoUseCase(
     InstanceValidator validator,
-    AlunoRepository alRepo,
-    TurmaRepository trRepo,
+    AlunoRepository alunoRepository,
+    TurmaRepository turmaRepository,
     Mediator mediator
   ) {
-    this.alRepo = alRepo;
-    this.trRepo = trRepo;
+    this.alRepo = alunoRepository;
+    this.trRepo = turmaRepository;
 
     this.alunoActions = new AlunoActions(mediator, validator);
     this.turmaActions = new TurmaActions(mediator, validator);

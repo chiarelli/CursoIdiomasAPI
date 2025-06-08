@@ -58,8 +58,8 @@ public class TurmaActions extends AbstractAggregateActions {
     }
     validator.validate(turma); // valida a turma
 
-    turma.clear(); // limpa a turma
     mediator.emit(new TurmaExcluidaEvent(turma.getTurmaId()));
+    turma.clear(); // limpa a turma
   }
 
 }

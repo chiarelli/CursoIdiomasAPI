@@ -11,9 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.DesmatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.MatricularAlunoTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.BadRequestResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.ResourceNotFoundResponse;
 
 import io.jkratz.mediator.core.Mediator;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -33,8 +37,22 @@ public class SecretariaController {
     summary = "Matricular aluno na turma",
     responses = {
       @ApiResponse(responseCode = "204", description = "Aluno matriculado com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Erro ao matricular aluno"),
-      @ApiResponse(responseCode = "404", description = "Aluno ou turma não encontrados"),
+      @ApiResponse(
+        responseCode = "400", 
+        description = "Erro ao matricular aluno",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = BadRequestResponse.class)
+        )
+      ),
+      @ApiResponse(
+        responseCode = "404", 
+        description = "Aluno ou turma não encontrados",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = ResourceNotFoundResponse.class)
+        )
+      ),
     }
     )
     public ResponseEntity<Void> matricularAluno(
@@ -52,8 +70,22 @@ public class SecretariaController {
         summary = "Desmatricular aluno da turma",
         responses = {
           @ApiResponse(responseCode = "204", description = "Aluno desmatriculado com sucesso"),
-          @ApiResponse(responseCode = "400", description = "Erro ao desmatricular aluno"),
-          @ApiResponse(responseCode = "404", description = "Aluno ou turma não encontrados"),
+          @ApiResponse(
+            responseCode = "400", 
+            description = "Erro ao desmatricular aluno",
+            content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = BadRequestResponse.class)
+            )
+          ),
+          @ApiResponse(
+            responseCode = "404", 
+            description = "Aluno ou turma não encontrados",
+            content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = ResourceNotFoundResponse.class)
+            )
+          ),
     }
   )
   public ResponseEntity<Void> desmatricularAlunoTurma(

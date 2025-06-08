@@ -21,13 +21,17 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.queries.Recuper
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.AtualizarDadosTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.CadastrarNovaTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirTurmaCommand;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.BadRequestResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.NovaTurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.ResourceNotFoundResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.TurmaJsonResponse;
 
 import io.jkratz.mediator.core.Mediator;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
@@ -50,7 +54,14 @@ public class TurmasController {
     description = "Cria uma nova turma.",
     responses = {
       @ApiResponse(responseCode = "201", description = "Turma criada com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Erro ao criar turma")
+      @ApiResponse(
+        responseCode = "400", 
+        description = "Erro ao criar turma",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = BadRequestResponse.class)
+        )
+      )
     }
   )
   public TurmaJsonResponse cadastrarTurma(@RequestBody NovaTurmaJsonRequest request) {
@@ -114,8 +125,21 @@ public class TurmasController {
     description = "Atualiza os dados de uma turma",
     responses = {
       @ApiResponse(responseCode = "200", description = "Turma atualizada com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Erro ao atualizar turma"),
-      @ApiResponse(responseCode = "404", description = "Turma não encontrada")
+      @ApiResponse(
+        responseCode = "400", 
+        description = "Erro ao atualizar turma",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = BadRequestResponse.class)
+        )),
+      @ApiResponse(
+        responseCode = "404", 
+        description = "Turma não encontrada",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = ResourceNotFoundResponse.class)
+        )
+      )
     }
   )
   public TurmaJsonResponse atualizarTurma(
@@ -146,7 +170,14 @@ public class TurmasController {
     description = "Exclui uma turma definitivamente",
     responses = {
       @ApiResponse(responseCode = "204", description = "Turma excluída com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Erro ao excluir turma"),
+      @ApiResponse(
+        responseCode = "400", 
+        description = "Erro ao excluir turma",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = BadRequestResponse.class)
+        )
+      ),
     }
   )
   public ResponseEntity<Void> excluirTurma(@PathVariable UUID id) {

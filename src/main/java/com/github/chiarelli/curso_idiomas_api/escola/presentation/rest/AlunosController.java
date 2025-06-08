@@ -24,11 +24,15 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.RegistrarNo
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.AlunoJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.BadRequestResponse;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.CriarAlunoJsonRequest;
 import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.PageCollectionJsonResponse;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.dtos.ResourceNotFoundResponse;
 
 import io.jkratz.mediator.core.Mediator;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
@@ -55,7 +59,14 @@ public class AlunosController {
     description = "Cria um novo aluno.",
     responses = {
       @ApiResponse(responseCode = "201", description = "Aluno criado com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Erro ao criar aluno")
+      @ApiResponse(
+        responseCode = "400", 
+        description = "Erro ao criar aluno",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = BadRequestResponse.class)
+        )
+      )
     }
   )
   public ResponseEntity<AlunoJsonResponse> cadastrarAluno(@RequestBody CriarAlunoJsonRequest request) {
@@ -121,7 +132,14 @@ public class AlunosController {
     description = "Retorna um aluno pelo id",
     responses = {
       @ApiResponse(responseCode = "200", description = "Aluno encontrado"),
-      @ApiResponse(responseCode = "404", description = "Aluno não encontrado")
+      @ApiResponse(
+        responseCode = "404", 
+        description = "Aluno não encontrado",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = ResourceNotFoundResponse.class)
+        )
+      )
     }
   )
   public AlunoJsonResponse buscarAlunoPorId(@PathVariable UUID id) {
@@ -147,8 +165,22 @@ public class AlunosController {
     description = "Atualiza os dados de um aluno",
     responses = {
       @ApiResponse(responseCode = "200", description = "Aluno atualizado com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Erro ao atualizar aluno"),
-      @ApiResponse(responseCode = "404", description = "Aluno não encontrado")
+      @ApiResponse(
+        responseCode = "400", 
+        description = "Erro ao atualizar aluno",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = BadRequestResponse.class)
+        )
+      ),
+      @ApiResponse(
+        responseCode = "404", 
+        description = "Aluno não encontrado",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = ResourceNotFoundResponse.class)
+        )
+      )
     }
   )
   public AlunoJsonResponse atualizarAluno(
@@ -182,7 +214,14 @@ public class AlunosController {
     description = "Exclui um aluno definitivamente",
     responses = {
       @ApiResponse(responseCode = "204", description = "Aluno excluído com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Erro ao excluir aluno"),
+      @ApiResponse(
+        responseCode = "400", 
+        description = "Erro ao excluir aluno",
+        content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = BadRequestResponse.class)
+        )
+      ),
     }
   )
   public ResponseEntity<Void> excluirAluno(@PathVariable UUID id) {

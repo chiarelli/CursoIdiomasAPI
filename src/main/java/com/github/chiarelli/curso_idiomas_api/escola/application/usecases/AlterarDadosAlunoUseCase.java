@@ -12,7 +12,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.events.AlunoAtualiza
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.AlunoActions;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.ResourceNotFoundException;
 
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;
@@ -38,7 +38,7 @@ public class AlterarDadosAlunoUseCase implements RequestHandler<AtualizarDadosAl
   @Transactional
   public AlunoInterface handle(AtualizarDadosAlunoCommand cmd) {
     var alunoP = repository.findById(cmd.getAlunoId())
-      .orElseThrow(() -> new NotFoundException("Aluno %s nao encontrado".formatted(cmd.getAlunoId())));
+      .orElseThrow(() -> new ResourceNotFoundException("Aluno %s nao encontrado".formatted(cmd.getAlunoId())));
 
     alunoP.setNome(cmd.getNome());
     alunoP.setEmail(cmd.getEmail());

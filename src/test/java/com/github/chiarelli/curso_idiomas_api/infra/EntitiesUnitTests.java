@@ -43,7 +43,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Turma;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoPersistence;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.ResourceNotFoundException;
 
 public class EntitiesUnitTests extends AbstractIntegrationTest {
 
@@ -444,7 +444,7 @@ public class EntitiesUnitTests extends AbstractIntegrationTest {
     // Matricular aluno turma inexistente
     var turmaIdInvalido = UUID.randomUUID();
 
-    var errorMsg = assertThrows(NotFoundException.class, () -> {
+    var errorMsg = assertThrows(ResourceNotFoundException.class, () -> {
       matricularAluno.handle(
         new MatricularAlunoTurmaCommand(
           turmaIdInvalido,
@@ -461,7 +461,7 @@ public class EntitiesUnitTests extends AbstractIntegrationTest {
     // Matricular aluno aluno inexistente
     var alunoIdInvalido = UUID.randomUUID();
 
-    var errorMsg2 = assertThrows(NotFoundException.class, () -> {
+    var errorMsg2 = assertThrows(ResourceNotFoundException.class, () -> {
       matricularAluno.handle(
         new MatricularAlunoTurmaCommand(
           turma2.getTurmaId(),
@@ -674,7 +674,7 @@ public class EntitiesUnitTests extends AbstractIntegrationTest {
     });
 
     // Recuperar aluno por ID
-    var errorMsg2 = assertThrows(NotFoundException.class, () -> {
+    var errorMsg2 = assertThrows(ResourceNotFoundException.class, () -> {
       
       recuperarAluno.handle(
         new RecuperarAlunoPeloIdQuery(

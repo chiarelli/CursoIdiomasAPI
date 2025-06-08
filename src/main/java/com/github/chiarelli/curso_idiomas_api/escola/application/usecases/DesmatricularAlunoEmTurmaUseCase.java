@@ -14,7 +14,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.ResourceNotFoundException;
 
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;
@@ -43,10 +43,10 @@ public class DesmatricularAlunoEmTurmaUseCase implements RequestHandler<Desmatri
   @Transactional
   public Void handle(DesmatricularAlunoTurmaCommand cmd) {
     var alunoP = alunoRepository.findById(cmd.getAlunoId())
-      .orElseThrow(() -> new NotFoundException("Aluno %s nao encontrado".formatted(cmd.getAlunoId())));
+      .orElseThrow(() -> new ResourceNotFoundException("Aluno %s nao encontrado".formatted(cmd.getAlunoId())));
     
     var turmaP = turmaRepository.findById(cmd.getTurmaId())
-      .orElseThrow(() -> new NotFoundException("Turma %s nao encontrada".formatted(cmd.getTurmaId())));
+      .orElseThrow(() -> new ResourceNotFoundException("Turma %s nao encontrada".formatted(cmd.getTurmaId())));
 
     if(!alunoP.getTurmas().contains(turmaP)) 
       throw new DomainException("Aluno %s nao matriculado na turma %s".formatted(cmd.getAlunoId(), cmd.getTurmaId())); //alunoP.getTurmas().contains(turmaP)

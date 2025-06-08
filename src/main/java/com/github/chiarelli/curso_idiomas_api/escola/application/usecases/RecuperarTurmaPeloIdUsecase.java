@@ -7,7 +7,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.queries.Recuper
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.TurmaInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.ResourceNotFoundException;
 
 import io.jkratz.mediator.core.RequestHandler;
 
@@ -24,7 +24,7 @@ public class RecuperarTurmaPeloIdUsecase implements RequestHandler<RecuperarTurm
   @Transactional(readOnly = true)
   public TurmaInterface handle(RecuperarTurmaPeloIdQuery query) {
     var turma = repository.findById(query.getTurmaId())
-      .orElseThrow(() -> new NotFoundException("Turma %s nao encontrada".formatted(query.getTurmaId())));
+      .orElseThrow(() -> new ResourceNotFoundException("Turma %s nao encontrada".formatted(query.getTurmaId())));
 
     return TurmaMapper.toDomain(turma);
   }

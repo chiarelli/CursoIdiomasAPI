@@ -10,7 +10,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.application.queries.ListarA
 import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInterface;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.ResourceNotFoundException;
 
 import io.jkratz.mediator.core.RequestHandler;
 
@@ -27,7 +27,7 @@ public class ListarAlunosDaTurmaUsecase implements RequestHandler<ListarAlunosDa
   @Transactional(readOnly = true)
   public Set<AlunoInterface> handle(ListarAlunosDaTurmaQuery query) {
     var turma = repository.findById(query.getTurmaId())
-      .orElseThrow(() -> new NotFoundException("Turma %s nao encontrada".formatted(query.getTurmaId())));
+      .orElseThrow(() -> new ResourceNotFoundException("Turma %s nao encontrada".formatted(query.getTurmaId())));
 
     return turma.getAlunos().stream().map(AlunoMapper::toDomain).collect(Collectors.toSet());
   }

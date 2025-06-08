@@ -13,7 +13,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaRepository;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.ResourceNotFoundException;
 
 import io.jkratz.mediator.core.EventHandler;
 import io.jkratz.mediator.core.Mediator;
@@ -43,7 +43,7 @@ public class MatricularAlunoEmTurmaUseCase implements RequestHandler<MatricularA
   @Transactional
   public Void handle(MatricularAlunoTurmaCommand cmd) {
     var turmaP = turmaRepository.findById(cmd.getTurmaId())
-      .orElseThrow(() -> new NotFoundException("Turma %s nao encontrada".formatted(cmd.getTurmaId())));
+      .orElseThrow(() -> new ResourceNotFoundException("Turma %s nao encontrada".formatted(cmd.getTurmaId())));
 
     turmaP.getAlunos().forEach(al -> {
       if (al.getAlunoId().equals(cmd.getAlunoId())) {
@@ -52,7 +52,7 @@ public class MatricularAlunoEmTurmaUseCase implements RequestHandler<MatricularA
     });
 
     var alunoP = alunoRepository.findById(cmd.getAlunoId())
-      .orElseThrow(() -> new NotFoundException("Aluno %s nao encontrado".formatted(cmd.getAlunoId())));
+      .orElseThrow(() -> new ResourceNotFoundException("Aluno %s nao encontrado".formatted(cmd.getAlunoId())));
 
     var turma = TurmaMapper.toDomain(turmaP);
     var aluno = AlunoMapper.toDomain(alunoP);

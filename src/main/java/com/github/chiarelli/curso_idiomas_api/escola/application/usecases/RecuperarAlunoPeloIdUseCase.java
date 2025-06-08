@@ -11,7 +11,7 @@ import com.github.chiarelli.curso_idiomas_api.escola.domain.contracts.AlunoInter
 import com.github.chiarelli.curso_idiomas_api.escola.domain.model.Aluno;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.AlunoRepository;
 import com.github.chiarelli.curso_idiomas_api.escola.infra.jpa.TurmaMapper;
-import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.NotFoundException;
+import com.github.chiarelli.curso_idiomas_api.escola.presentation.exceptions.ResourceNotFoundException;
 
 import io.jkratz.mediator.core.RequestHandler;
 
@@ -27,7 +27,7 @@ public class RecuperarAlunoPeloIdUseCase implements RequestHandler<RecuperarAlun
     var opPersistence = repository.findById(alunoId);
 
     if (opPersistence.isEmpty()) {
-      throw new NotFoundException("aluno id " + alunoId.toString() + " not exists.");
+      throw new ResourceNotFoundException("aluno id " + alunoId.toString() + " not exists.");
     }
 
     var persistence = opPersistence.get();

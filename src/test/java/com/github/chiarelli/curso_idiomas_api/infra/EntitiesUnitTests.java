@@ -652,8 +652,8 @@ public class EntitiesUnitTests extends AbstractIntegrationTest {
     }).getUserMessages();
 
     assertTrue(
-      errorMsg.get("error").equals("Aluno "+ aluno.getAlunoId() +" nao pode ser excluído"), 
-      "deveria apresentar mensagem \"Aluno "+ aluno.getAlunoId() +" nao pode ser excluído\""
+      errorMsg.get("error").equals("Aluno "+ aluno.getAlunoId() +" nao pode ser excluído, pois ainda esta matriculado em mais de uma turma"), 
+      "deveria apresentar mensagem \"Aluno "+ aluno.getAlunoId() +" nao pode ser excluído, pois ainda esta matriculado em mais de uma turma\""
     );
 
     // Desmatriculando aluno da turma1

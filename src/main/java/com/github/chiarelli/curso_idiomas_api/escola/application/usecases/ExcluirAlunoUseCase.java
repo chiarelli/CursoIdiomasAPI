@@ -1,11 +1,12 @@
 package com.github.chiarelli.curso_idiomas_api.escola.application.usecases;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.chiarelli.curso_idiomas_api.escola.domain.DomainException;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.InstanceValidator;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.DesmatricularAlunoTurmaCommand;
 import com.github.chiarelli.curso_idiomas_api.escola.domain.commands.ExcluirAlunoCommand;
@@ -50,17 +51,16 @@ public class ExcluirAlunoUseCase implements RequestHandler<ExcluirAlunoCommand, 
     var alunoPer = result.get();
     var aluno = AlunoMapper.toDomain(alunoPer);
 
-    if(!aluno.canBeDeleted()) {
-      throw new DomainException("Aluno %s nao pode ser excluído".formatted(aluno.getAlunoId()));
-    }
+    aluno.validateForDeletion(); // verifica se aluno pode ser excluido
 
-    alunoPer.getTurmas().forEach(t -> {
+    new ArrayList<>(alunoPer.getTurmas()).forEach(t -> {
       var turma = TurmaMapper.toDomain(t);
 
       desmatricularAluno.handle(
         new DesmatricularAlunoTurmaCommand(turma.getTurmaId(), aluno.getAlunoId())
       );
-      
+
+      aluno.removeTurma(turma);      
     });
 
     alunoRepository.delete(alunoPer); // exclui o aluno no banco de dados

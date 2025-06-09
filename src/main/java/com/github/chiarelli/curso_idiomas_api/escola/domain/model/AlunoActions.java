@@ -25,11 +25,10 @@ public class AlunoActions extends AbstractAggregateActions {
     mediator.emit(new AlunoAtualizadoEvent(aluno));
   }
   
-  public void excluirAluno(Aluno aluno) {
-    if(!aluno.canBeDeleted())
+  public void excluirAluno(Aluno aluno) {    
+    if(aluno.getTurmas().size() > 0) {
       throw new DomainException("Aluno %s nao pode ser excluído, pois ainda esta matriculado em pelo menos uma turma".formatted(aluno.getAlunoId()));
-    
-    // validator.validate(aluno); // Valida o aluno após as regras de negócio
+    }
     
     mediator.emit(new AlunoExcluidoEvent(aluno.getAlunoId()));
     aluno.clear();

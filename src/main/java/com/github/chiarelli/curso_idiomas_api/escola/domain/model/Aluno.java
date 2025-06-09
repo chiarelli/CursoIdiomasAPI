@@ -87,8 +87,10 @@ public class Aluno implements AlunoInterface {
     this.email = null;
   }
 
-  public boolean canBeDeleted() {
-    return turmas.size() <= 1;
+  public void validateForDeletion() {
+    if(turmas.size() > 1) {
+      throw new DomainException("Aluno %s nao pode ser excluído, pois ainda esta matriculado em mais de uma turma".formatted(getAlunoId()));
+    }
   }
 
   // ##### Getters #####

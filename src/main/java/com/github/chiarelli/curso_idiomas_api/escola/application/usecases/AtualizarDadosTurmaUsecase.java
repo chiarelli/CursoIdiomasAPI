@@ -38,17 +38,21 @@ public class AtualizarDadosTurmaUsecase implements RequestHandler<AtualizarDados
   @Override
   @Transactional
   public TurmaInterface handle(AtualizarDadosTurmaCommand cmd) {
-    if (turmaRepository.countByNumeroTurmaAndAnoLetivo(cmd.getNumeroTurma(), cmd.getAnoLetivo()) > 0) {
-      throw new DomainException(
-        "Turma com numero %s e ano letivo %s já cadastrada"
-        .formatted(cmd.getNumeroTurma(), cmd.getAnoLetivo()));
-    }
+    turmaRepository.findByNumeroTurmaAndAnoLetivo(cmd.getNumeroTurma(), cmd.getAnoLetivo())
+      .ifPresent(turma -> {
+        if (!turma.getId().equals(cmd.getTurmaId())) {
+          throw new DomainException(
+            "Turma com numero %s e ano letivo %s já cadastrada"
+            .formatted(cmd.getNumeroTurma(), cmd.getAnoLetivo()));
+        }
+      });
 
     var turmaP = turmaRepository.findById(cmd.getTurmaId())
       .orElseThrow(() -> new ResourceNotFoundException("Turma %s nao encontrada".formatted(cmd.getTurmaId())));
 
       turmaP.setNumeroTurma(cmd.getNumeroTurma());
       turmaP.setAnoLetivo(cmd.getAnoLetivo());
+      turmaP.setId(cmd.getTurmaId());
 
       turmaP = turmaRepository.save(turmaP);
 

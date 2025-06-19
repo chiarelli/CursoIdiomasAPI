@@ -91,12 +91,12 @@ public class TurmaPersistence {
     if (this == o) return true;
     if (!(o instanceof TurmaPersistence)) return false;
     TurmaPersistence turma = (TurmaPersistence) o;
-    return numeroTurma != null && numeroTurma.equals(turma.numeroTurma);
+    return id != null && id.equals(turma.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(numeroTurma);
+    return Objects.hashCode(id);
   }
 
 }

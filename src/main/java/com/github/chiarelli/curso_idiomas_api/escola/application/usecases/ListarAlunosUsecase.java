@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,8 @@ public class ListarAlunosUsecase implements RequestHandler<PageListarAlunosQuery
   @Override
   @Transactional(readOnly = true)
   public Page<AlunoInterface> handle(PageListarAlunosQuery query) {
-    var pageable = PageRequest.of(query.getPage() - 1, query.getSize());
+    Sort sort = Sort.by(Sort.Direction.ASC, "nome");
+    var pageable = PageRequest.of(query.getPage() - 1, query.getSize(), sort);
     Page<AlunoPersistence> page = repository.findAll(pageable);
 
     return new PageImpl<>(

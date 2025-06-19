@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,11 @@ public class ListarTurmasUsecase implements RequestHandler<PageListarTurmasQuery
   @Override
   @Transactional(readOnly = true)
   public Page<TurmaInterface> handle(PageListarTurmasQuery query) {
-    var pageable = PageRequest.of(query.getPage() - 1, query.getSize());
+    var sort = Sort.by(
+      Sort.Order.desc("anoLetivo"), // Ano letivo do mais recente para o mais antigo
+      Sort.Order.asc("numeroTurma") // Número da turma em ordem crescente
+    );
+    var pageable = PageRequest.of(query.getPage() - 1, query.getSize(), sort);
     var turmaPer = repository.findAll(pageable);
 
     return new PageImpl<>(
